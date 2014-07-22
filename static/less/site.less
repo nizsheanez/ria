@@ -1,0 +1,83 @@
+@import "../vendor/bootstrap/less/bootstrap.less";
+@import "../vendor/components-font-awesome/less/font-awesome.less";
+@import (less) "../vendor/jquery-ui/themes/humanity/jquery-ui.min.css";
+//@import "../../../../vendor/twbs/bootstrap/less/mixins.less";
+
+/*!
+ *  evolve-games
+ */
+
+@body-bg: #F3F3F3;
+@legend-border-color: #dddddd;
+@border-color: @legend-border-color;
+@border-style: 1px solid @border-color;
+@input-border-focus: #bbbbbb;
+
+.text-rendering(@model) {
+  -webkit-text-rendering: @model;
+  -moz-text-rendering: @model;
+  -ms-text-rendering: @model;
+  -o-text-rendering: @model;
+  text-rendering: @model;
+}
+
+.font-smoothing(@model) {
+  -webkit-font-smoothing: @model;
+  -moz-font-smoothing: @model;
+  -ms-font-smoothing: @model;
+  -o-font-smoothing: @model;
+  font-smoothing: @model;
+}
+
+.first-load {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background: #FFF;
+  top: 0;
+  left: 0;
+  opacity: 1;
+  z-index: 10000;
+}
+
+body {
+  -webkit-font-smoothing: antialiased;
+
+  .footer {
+    border-top: @border-style;
+    margin-top: 30px;
+    padding-top: 15px;
+    padding-bottom: 30px;
+  }
+}
+
+.main-container {
+  min-height: 100%;
+}
+.content-container{
+  background: #fff;
+  position: relative;
+  border-top-left-radius: 2px;
+  border-top-right-radius: 2px;
+
+  border: @border-style;
+}
+.modal{
+  display: block;
+}
+
+#sidebar{
+
+  padding-left: 5px;
+  border-left: @border-style;
+  .sidebar_panel{
+    min-height: 75px;
+  }
+}
+
+
+
+@import "navigation";
+@import "goals-app";
+
+

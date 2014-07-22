@@ -1,3 +1,4 @@
 ria
 .idea
 atlassian-ide-plugin.xml
+static/vendor/*

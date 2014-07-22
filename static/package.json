@@ -1,0 +1,33 @@
+{
+    "name": "blog3",
+    "version": "0.0.0",
+    "devDependencies": {
+        "karma-junit-reporter": "latest",
+
+        "gulp-less": "latest",
+        "gulp-clean": "latest",
+        "gulp-minify-css": "latest",
+        "gulp-jshint": "latest",
+        "gulp-concat": "latest",
+        "gulp-minify-html": "latest",
+        "gulp-changed": "latest",
+        "gulp-imagemin": "latest",
+        "gulp-notify": "latest",
+        "gulp-uglify": "latest",
+        "gulp-cached": "latest",
+        "gulp-newer": "latest",
+        "gulp-rename": "latest",
+        "gulp-inject": "latest",
+        "gulp-ngmin": "latest",
+        "gulp-watch": "latest",
+        "gulp-debug": "latest",
+        "gulp-shell": "latest",
+        "gulp-spawn": "latest",
+        "gulp-livereload": "latest",
+
+        "tiny-lr": "latest"
+
+    },
+    "scripts": {
+    }
+}

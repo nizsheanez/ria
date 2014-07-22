@@ -1,0 +1,93 @@
+.eg-editor {
+  height: auto;
+  overflow: auto;
+  font-family: inherit;
+  font-size: 100%;
+
+  [contenteditable] {
+    border: none;
+    resize: none;
+    width: 100%;
+    min-height: 50px;
+    font-size: 12px;
+    color: #535353;
+    border-radius: none;
+    background-color: transparent;
+    .box-shadow(none);
+
+    &:focus, &:hover, &:active {
+      .box-shadow(inset 0 1px 1px rgba(0,0,0,.075));
+      border: @border-style;
+      outline: none;
+      .box-shadow(none);
+      padding: 5px 11px;
+    }
+  }
+  .eg-form-control{
+    display: block;
+    width: 100%;
+    padding: @padding-base-vertical @padding-base-horizontal;
+    font-size: @font-size-base;
+    line-height: @line-height-base;
+    color: @input-color;
+    border-radius: @input-border-radius;
+
+    // Customize the `:focus` state to imitate native WebKit styles.
+    .form-control-focus();
+
+    // Placeholder
+    .placeholder();
+  }
+}
+
+.eg-panel {
+  .panel {
+    background-color: transparent;
+    border: 0;
+    .box-shadow(none);
+  }
+  .panel-heading {
+    border: none;
+    background: none;
+    padding: 0;
+    .mod-divider();
+
+    .panel-title-wrapper {
+      display: inline-block;
+      .mod-title();
+    }
+    .panel-title {
+      padding: 0 10px 3px 0;
+      background-color: transparent;
+      float: left;
+    }
+    .eg-control-panel {
+      .btn {
+        padding: 1px 6px;
+      }
+    }
+  }
+}
+
+.eg-control-panel {
+  float: left;
+  .eg-editor-toolbar {
+    margin-left: -12px;
+  }
+
+  .btn {
+    color: #666;
+    padding: 2px 2px;
+
+    background: none;
+    outline: none;
+    box-shadow: none;
+    &:hover, &:active {
+      background: none;
+      outline: none;
+      .box-shadow(none);
+      color: #333;
+    }
+  }
+
+}

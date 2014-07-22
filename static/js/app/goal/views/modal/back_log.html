@@ -1,0 +1,60 @@
+<div class="{{html.modalClass}}">
+    <div class="modal-header">
+        <h4 class="modal-title">Goal Editing</h4>
+    </div>
+    <div class="modal-body">
+        <div class="goals-planing">
+            <h3>Planing</h3>
+            <ul ng-model="goals">
+                <li ng-repeat="(key, goal) in goals | filter:{ fk_goal_category: category.id, completed: 0 }">
+                    <div>{{goal.title}}</div>
+                    <div>
+                        <a class="btn goal-edit-button" ng-click="editGoalModal(goal)" href="#">
+                            <i class="fa fa-pencil-square-o"></i>
+                        </a>
+                    </div>
+                </li>
+            </ul>
+        </div>
+        <div class="goals-done">
+            <h3>Done</h3>
+            <table class="table">
+                <tbody>
+                <tr class="success"
+                    ng-repeat="(key, goal) in goals | filter:{ fk_goal_category: category.id, completed: 1 }"
+                        >
+                    <td>{{goal.id}}</td>
+                    <td>{{goal.title}}</td>
+                    <td>
+                        <a class="btn goal-edit-button" ng-click="editGoalModal(goal)" href="#">
+                            <i class="fa fa-pencil-square-o"></i>
+                        </a>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="goals-fail">
+            <h3>Failed</h3>
+            <table class="table">
+                <tbody>
+                <tr class="warning"
+                    ng-repeat="(key, goal) in goals | filter:{ fk_goal_category: category.id, completed: 2   }"
+                        >
+                    <td>{{goal.id}}</td>
+                    <td>{{goal.title}}</td>
+                    <td>
+                        <a class="btn goal-edit-button" ng-click="editGoalModal(goal)" href="#">
+                            <i class="fa fa-pencil-square-o"></i>
+                        </a>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button class="btn btn-primary" ng-click="ok()">OK</button>
+        <button class="btn btn-warning" ng-click="cancel()">Cancel</button>
+    </div>
+</div>

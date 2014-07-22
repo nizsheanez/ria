@@ -1,0 +1,60 @@
+<div id="goals-grid">
+    <div ng-repeat="category in categories" class="category-panel sel-cat-{{category.id}}">
+        <div class="category-title-wrapper">
+            <p class="category-title">
+                {{category.name}}
+                <a href="#" ng-click="addGoalModal(category)" class="goal-add-button"><i
+                        class="fa fa-plus-square-o"></i></a>
+                <a href="#" ng-click="backLogModal(category)" class="category-backlog-button"><i
+                        class="fa fa-tasks"></i></a>
+            </p>
+        </div>
+        <div
+                ng-repeat="(key, goal) in goals | filter:{ fk_goal_category: category.id, completed: 0 }"
+                ng-if="key < 3"
+                class="goal-detail sel-goal-{{goal.id}}"
+                ng-click="setFocus(goal)"
+                ng-focus="setFocus(goal)"
+                tabindex="{{ index + 1 }}"
+                >
+            <header class="goal_title">
+                <div class="row">
+                    <div class="col-md-10">
+                        <p class="title">
+                            {{goal.title}}
+                        </p>
+                    </div>
+
+                    <div class="eg-control-panel col-md-2" ng-class="{active: focusGoal === goal}">
+                        <a class="btn goal-edit-button" ng-click="editGoalModal(goal)" href="#">
+                            <i class="fa fa-pencil-square-o"></i>
+                        </a>
+                        <a class="btn goal-complete-button" ng-click="complete(goal)" href="#">
+                            <i class="fa fa-smile-o"></i>
+                        </a>
+                        <a class="btn goal-fail-button" ng-click="fail(goal)" href="#">
+                            <i class="fa fa-ban"></i>
+                        </a>
+                    </div>
+                </div>
+            </header>
+
+        </div>
+    </div>
+</div>
+<div class="conclusion">
+    <eg-panel ng-transclude>
+        <header class="goal_title">
+            <p class="panel-title">Insights</p>
+
+            <div class="eg-control-panel editor-controls"></div>
+        </header>
+        <eg-editor
+                class="panel-body"
+                placeholder="defaultPlaceholder"
+                ng-model="conclusions[day].description"
+                ng-change="save(conclusions[day])"
+                ></eg-editor>
+
+    </eg-panel>
+</div>

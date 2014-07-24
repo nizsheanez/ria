@@ -2,6 +2,7 @@ package controllers
 
 import (
 	"github.com/astaxie/beego"
+	"ria/components"
 )
 
 type MainController struct {
@@ -9,7 +10,22 @@ type MainController struct {
 }
 
 func (this *MainController) Get() {
-	this.Data["Website"] = "beego.me"
-	this.Data["Email"] = "astaxie@gmail.com"
+	assets := components.Assets()
+
+	if css, err := assets.Css(); err != nil {
+		beego.Error(err)
+	} else {
+		this.Data["Css"] = css
+	}
+
+	if js, err := assets.Js(); err != nil {
+		beego.Error(err)
+	} else {
+		this.Data["Js"] = js
+	}
+
+	this.Data["Storage"] = "{}"
+
+
 	this.TplNames = "index.tpl"
 }

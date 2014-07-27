@@ -8,7 +8,8 @@ var css string
 var js string
 
 func init() {
-	assets := components.AssetManager().Add(AppAsset())
+	components.AddConverter(components.AssetConverter(&components.Less{}))
+	assets := AppAsset()
 	var err error = nil
 
 	css, err = assets.Css();

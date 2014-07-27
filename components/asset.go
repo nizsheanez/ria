@@ -6,8 +6,6 @@ import (
 	"os"
 	"os/exec"
 	"strings"
-	"fmt"
-	"path/filepath"
 )
 
 type Asseter interface {
@@ -15,6 +13,13 @@ type Asseter interface {
 	Css() (string, error)
 	Depends() []Asseter
 }
+
+type AssetConverter interface {
+	Convert(sourcePath string, targetPath string, stdout chan int, stderr chan error)
+	HandleExtensions() []string
+}
+
+var converters []AssetConverter
 
 type Asset struct {
 	basePath string
@@ -26,6 +31,10 @@ type Asset struct {
 
 func NewAsset() *Asset {
 	return &Asset{}
+}
+
+func AddConverter(converter AssetConverter) {
+	converters = append(converters, converter)
 }
 
 func (this *Asset) SetCss(css ...string) *Asset {
@@ -76,74 +85,54 @@ func (this *Asset) Css() (string, error) {
 		result += content
 	}
 
-	appRoot, err := os.Getwd()
-	if err != nil {
-		return "", err
-	}
-
 	for _, css := range this.css {
-		relativeSourcePath := this.baseUrl + "/" + css
 
-		if strings.HasSuffix(css, ".less") {
-			sourcePath := appRoot + "/" + relativeSourcePath
-			relativeTargetPath := "static/assets/compile/" + strings.Replace(css, ".less", ".css", 1)
-			targetPath := appRoot + "/" + relativeTargetPath
-
-			stdout := make(chan int)
-			stderr := make(chan error)
-			go less(sourcePath, targetPath, stdout, stderr)
-			select {
-			case <-stdout:
-				//just finished nothing to do
-			case err := <-stderr:
-				return "", err
-			}
-
-			css = relativeTargetPath
-		} else {
-			css = relativeSourcePath
+		outputFile, err := convert(css, this.baseUrl)
+		if err != nil {
+			return "", err
 		}
 
-		result += "<link href=\""+css+"\" rel=\"stylesheet\">\n"
+		result += "<link href=\""+outputFile+"\" rel=\"stylesheet\">\n"
 	}
 
 	return result, nil
 }
 
-func (this *Asset) Depends() []Asseter {
-	return this.depends
-}
-
-func less(sourcePath string, targetPath string, stdout chan int, stderr chan error) {
-
-	fi1, err := os.Stat(sourcePath)
+func convert(file string, baseUrl string) (result string, err error) {
+	appRoot, err := os.Getwd()
 	if err != nil {
-		stderr <- err
 		return
 	}
-	mtime1 := fi1.ModTime().Unix()
-	fi2, err := os.Stat(targetPath)
-	var mtime2 int64
-	if err != nil {
-		if !os.IsNotExist(err) {
-			stderr <- err
-			return
+
+	relativeSourcePath := baseUrl + "/" + file
+
+	for _, converter := range converters {
+		for _, ext := range converter.HandleExtensions() {
+			if strings.HasSuffix(file, ext) {
+				sourcePath := appRoot + "/" + relativeSourcePath
+				relativeTargetPath := "static/assets/compile/" + strings.Replace(file, ext, ".css", 1)
+				targetPath := appRoot + "/" + relativeTargetPath
+
+				stdout := make(chan int)
+				stderr := make(chan error)
+				go converter.Convert(sourcePath, targetPath, stdout, stderr)
+				select {
+				case <-stdout:
+					//just finished nothing to do
+				case err := <-stderr:
+					return
+				}
+
+				return relativeTargetPath, nil
+			}
 		}
-	} else {
-		mtime2 = fi2.ModTime().Unix()
 	}
 
-	if mtime2 < mtime1 {
-		cmd := "lessc %s %s --no-color"
-		cmd = fmt.Sprintf(cmd, sourcePath, targetPath)
-		_, err := execCmd(cmd, filepath.Dir(sourcePath))
-		if err != nil {
-			stderr <- errors.New(fmt.Sprintf("Command failed: %s\n%s", cmd, err.Error()))
-			return
-		}
-	}
+	return relativeSourcePath, nil
+}
 
-	stdout <- 1
+func (this *Asset) Depends() []Asseter {
+	return this.depends
 }
 
 func execCmd(cmdStr string, chdir string) ([]byte, error) {

@@ -6,9 +6,18 @@
     {{ .Css | str2html }}
 </head>
 <body>
+<div class="main-container ">
+    <div class="container">
+        <div>
+            <alert ng-repeat="alert in alerts" type="alert.type" close="closeAlert($index)"></alert>
+        </div>
+        <ng-view/>
+    </div>
+</div>
+
 
 <script>
-    storage = {{ .Storage | str2html }}
+    storage = {{ .Storage }}
 </script>
 
 {{ if .Debug }}
@@ -16,15 +25,5 @@
 {{ end }}
 
 {{ .Js | str2html }}
-<script>
-    $(document).ready(function() {
-        $.get('/site/auto', {}, function(auto) {
-            $.post('/site/html', {a:auto}, function(a,b,c) {
-                console.log(a,b,c);
-            },'json');
-        })
-    });
-</script>
-
 </body>
 </html>

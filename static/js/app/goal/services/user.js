@@ -26,6 +26,7 @@ angular.module('eg.goal').factory('User', ['$rootScope', '$socketResource', '$re
         } ,
         get: function (callback) {
             var user = service.instantiate(storage.init);
+
             callback();
         },
         getAll: function () {

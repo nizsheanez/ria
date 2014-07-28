@@ -3,7 +3,6 @@ package components
 import (
 	"bytes"
 	"errors"
-	"os"
 	"os/exec"
 	"strings"
 )
@@ -86,47 +85,18 @@ func (this *Asset) Css() (string, error) {
 	}
 
 	for _, css := range this.css {
-
-		outputFile, err := convert(css, this.baseUrl)
-		if err != nil {
-			return "", err
-		}
-
-		result += "<link href=\""+outputFile+"\" rel=\"stylesheet\">\n"
+		result += "<link href=\""+this.baseUrl+"/"+css+"\" rel=\"stylesheet\">\n"
 	}
 
 	return result, nil
 }
 
 func convert(file string, baseUrl string) (result string, err error) {
-	appRoot, err := os.Getwd()
 	if err != nil {
 		return
 	}
 
-	relativeSourcePath := baseUrl + "/" + file
-
-	for _, converter := range converters {
-		if converter.CanConvert(file) {
-			sourcePath := appRoot + "/" + relativeSourcePath
-			relativeTargetPath := "static/assets/compile/" + strings.Replace(file, ".less", ".css", 1)
-			targetPath := appRoot + "/" + relativeTargetPath
-
-			stdout := make(chan int)
-			stderr := make(chan error)
-			go converter.Convert(sourcePath, targetPath, stdout, stderr)
-			select {
-			case <-stdout:
-				//just finished nothing to do
-			case err := <-stderr:
-				return "", err
-			}
-
-			return relativeTargetPath, nil
-		}
-	}
-
-	return relativeSourcePath, nil
+	return baseUrl+"/"+file, nil
 }
 
 func (this *Asset) Depends() []Asseter {

@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('eg.components', []).service('server', function () {
-    var prefix = 'http://' + document.domain + '/api/v1/';
+    var prefix = 'http://' + document.domain + '/ws/';
     var socketDefer = $.Deferred();
     // WAMP session object
 
@@ -38,7 +38,7 @@ angular.module('eg.components', []).service('server', function () {
     }
 
     // connect to WAMP server
-    ab.connect('ws://' + document.domain + ':8047/', onConnect, onDisconnect, {
+    ab.connect('ws://' + document.domain + ':8080/', onConnect, onDisconnect, {
         'maxRetries': 60000,
         'retryDelay': 1000
     });

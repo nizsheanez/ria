@@ -2,10 +2,9 @@
 // services in angular.js is lazy, but socket must be opened ASAP
 // i know about .run() on service, but it's critical time
 (function () {
-    return;
     var socket = new JsonWebSocket({
         url: {
-            ws: 'ws://' + document.domain + ':8047/'
+            ws: 'ws://' + document.domain + ':8080/'
         },
         root: 'js/websocket/',
         pushHandler: function () {
@@ -16,7 +15,7 @@
 /*
     var socket = new WebSocketConnection2({
         url: {
-            ws: 'ws://' + document.domain + ':8047/'
+            ws: 'ws://' + document.domain + ':8080/'
         },
         root: 'js/websocket/'
     });

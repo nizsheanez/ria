@@ -8,7 +8,6 @@ var css string
 var js string
 
 func init() {
-	components.AddConverter(components.AssetConverter(&components.Less{}))
 	assets := AppAsset()
 	var err error = nil
 
@@ -85,10 +84,16 @@ func AppAsset() *components.Asset {
 			"socketResource.js",
 		)
 
+	sockjs := components.NewAsset().
+		SetBaseUrl("static/vendor/sockjs").
+		SetJs(
+			"sockjs.js",
+		)
+
 	app := components.NewAsset().
 		SetBaseUrl("static").
 		SetCss(
-			"less/site.less",
+			"assets/build/css/site.css",
 		).
 		SetJs(
 			"js/common/fixes.js",
@@ -110,6 +115,7 @@ func AppAsset() *components.Asset {
 			jquery,
 			angular,
 			autobahn,
+			sockjs,
 			angularUi,
 			uiBootstrap,
 			angularElastic,

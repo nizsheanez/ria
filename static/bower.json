@@ -19,6 +19,7 @@
         "angular-scenario": "*",
         "components-font-awesome": "*",
         "angular-elastic": "*",
+        "sockjs": "*",
         "textAngular": "https://github.com/nizsheanez/textAngular.git#directives_support"
     },
     "resolutions": {

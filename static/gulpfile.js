@@ -1,12 +1,10 @@
 // include gulp
 var gulp = require('gulp'),
     concat = require('gulp-concat'),
-    jshint = require('gulp-jshint'),
     less = require('gulp-less'),
     rename = require('gulp-rename'),
     rimraf = require('gulp-rimraf'),
     minifycss = require('gulp-minify-css'),
-    imagemin = require('gulp-imagemin'),
     path = require('path'),
     ngannotate = require('gulp-ng-annotate'),
     watch = require('gulp-watch'),
@@ -16,7 +14,7 @@ var gulp = require('gulp'),
     debug = require('gulp-debug');
 
 var conf = {
-    app: './src/',
+    app: './',
     dist: './assets/build/',
     root: '../../'
 };
@@ -98,7 +96,7 @@ gulp.task('js.ngmin', function () {
 gulp.task('js.concat', ['js.ngmin', 'js.copy'], function () {
 
     gulp.src(js)
-        .pipe(debug({verbose: false}))
+//        .pipe(debug({verbose: false}))
         .pipe(concat('all.js'))
         .pipe(gulp.dest(conf.dist))
 });
@@ -106,7 +104,7 @@ gulp.task('js.concat', ['js.ngmin', 'js.copy'], function () {
 gulp.task('js.compress', ['js.concat'], function () {
 
     return gulp.src(conf.dist + '/all.js')
-        .pipe(debug({verbose: false}))
+//        .pipe(debug({verbose: false}))
         .pipe(uglify({outSourceMap: true}))
         .pipe(gulp.dest(conf.dist + '/min'));
 });

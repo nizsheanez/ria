@@ -1,11 +1,10 @@
 {
-    "name": "blog3",
+    "name": "ria",
     "version": "0.0.0",
     "devDependencies": {
-        "karma-junit-reporter": "latest",
-
+        "gulp": "latest",
         "gulp-less": "latest",
-        "gulp-clean": "latest",
+        "gulp-rimraf": "latest",
         "gulp-minify-css": "latest",
         "gulp-jshint": "latest",
         "gulp-concat": "latest",
@@ -18,15 +17,12 @@
         "gulp-newer": "latest",
         "gulp-rename": "latest",
         "gulp-inject": "latest",
-        "gulp-ngmin": "latest",
+        "gulp-ng-annotate": "latest",
         "gulp-watch": "latest",
         "gulp-debug": "latest",
         "gulp-shell": "latest",
         "gulp-spawn": "latest",
-        "gulp-livereload": "latest",
-
-        "tiny-lr": "latest"
-
+        "gulp-livereload": "latest"
     },
     "scripts": {
     }

@@ -16,7 +16,7 @@ type Asseter interface {
 
 type AssetConverter interface {
 	Convert(sourcePath string, targetPath string, stdout chan int, stderr chan error)
-	HandleExtensions() []string
+	CanConvert(file string) bool
 }
 
 var converters []AssetConverter
@@ -107,24 +107,22 @@ func convert(file string, baseUrl string) (result string, err error) {
 	relativeSourcePath := baseUrl + "/" + file
 
 	for _, converter := range converters {
-		for _, ext := range converter.HandleExtensions() {
-			if strings.HasSuffix(file, ext) {
-				sourcePath := appRoot + "/" + relativeSourcePath
-				relativeTargetPath := "static/assets/compile/" + strings.Replace(file, ext, ".css", 1)
-				targetPath := appRoot + "/" + relativeTargetPath
+		if converter.CanConvert(file) {
+			sourcePath := appRoot + "/" + relativeSourcePath
+			relativeTargetPath := "static/assets/compile/" + strings.Replace(file, ".less", ".css", 1)
+			targetPath := appRoot + "/" + relativeTargetPath
 
-				stdout := make(chan int)
-				stderr := make(chan error)
-				go converter.Convert(sourcePath, targetPath, stdout, stderr)
-				select {
-				case <-stdout:
-					//just finished nothing to do
-				case err := <-stderr:
-					return
-				}
-
-				return relativeTargetPath, nil
+			stdout := make(chan int)
+			stderr := make(chan error)
+			go converter.Convert(sourcePath, targetPath, stdout, stderr)
+			select {
+			case <-stdout:
+				//just finished nothing to do
+			case err := <-stderr:
+				return "", err
 			}
+
+			return relativeTargetPath, nil
 		}
 	}
 

@@ -4,19 +4,16 @@ var gulp = require('gulp'),
     jshint = require('gulp-jshint'),
     less = require('gulp-less'),
     rename = require('gulp-rename'),
-    clean = require('gulp-clean'),
-//    notify = require('gulp-notify'),
+    rimraf = require('gulp-rimraf'),
     minifycss = require('gulp-minify-css'),
     imagemin = require('gulp-imagemin'),
     path = require('path'),
-    ngmin = require('gulp-ngmin'),
+    ngannotate = require('gulp-ng-annotate'),
     watch = require('gulp-watch'),
     uglify = require('gulp-uglify'),
     shell = require('gulp-shell'),
     livereload = require('gulp-livereload'),
-    debug = require('gulp-debug'),
-    lr = require('tiny-lr'),
-    server = lr();
+    debug = require('gulp-debug');
 
 var conf = {
     app: './src/',
@@ -25,46 +22,45 @@ var conf = {
 };
 
 var js = [
-    conf.app + '/vendor/jquery/dist/jquery.min.js',
+        conf.app + '/vendor/jquery/dist/jquery.min.js',
 //    conf.app + '/vendor/jquery-ui/ui/minified/jquery-ui.min.js',
-    conf.dist + '/ngmin/vendor/angular.min.js',
-    conf.app + '/vendor/angular-resource/angular-resource.min.js',
-    conf.app + '/vendor/angular-route/angular-route.min.js',
-    conf.app + '/vendor/angular-translate/*.min.js',
-    conf.app + '/vendor/angular-ui/*.min.js',
-    conf.app + '/vendor/angular-bootstrap/ui-bootstrap.min.js',
-    conf.app + '/vendor/angular-bootstrap/ui-bootstrap-tpls.js',
-    conf.app + '/vendor/angular-sortable/src/sortable.js',
-    conf.dist + '/ngmin/vendor/angular-elastic/elastic.js',
-    conf.app + '/vendor/angular-ui-utils/*.min.js',
-    conf.app + '/vendor/angular-sanitize/*.min.js',
-    conf.app + '/vendor/textAngular/*.min.js',
+        conf.dist + '/ngmin/vendor/angular.min.js',
+        conf.app + '/vendor/angular-resource/angular-resource.min.js',
+        conf.app + '/vendor/angular-route/angular-route.min.js',
+        conf.app + '/vendor/angular-translate/*.min.js',
+        conf.app + '/vendor/angular-ui/*.min.js',
+        conf.app + '/vendor/angular-bootstrap/ui-bootstrap.min.js',
+        conf.app + '/vendor/angular-bootstrap/ui-bootstrap-tpls.js',
+        conf.app + '/vendor/angular-sortable/src/sortable.js',
+        conf.dist + '/ngmin/vendor/angular-elastic/elastic.js',
+        conf.app + '/vendor/angular-ui-utils/*.min.js',
+        conf.app + '/vendor/angular-sanitize/*.min.js',
+        conf.app + '/vendor/textAngular/*.min.js',
 
 
+        conf.dist + '/ngmin/websocket/**/*.js',
 
-    conf.dist + '/ngmin/websocket/**/*.js',
+        conf.dist + '/ngmin/common/**/*.js',
+        conf.dist + '/ngmin/app/app.js',
+        conf.dist + '/ngmin/app/goal/services/goal.js',
+        conf.dist + '/ngmin/app/goal/services/modal.js',
+        conf.dist + '/ngmin/app/goal/services/category.js',
+        conf.dist + '/ngmin/app/goal/services/report.js',
+        conf.dist + '/ngmin/app/goal/services/tpl.js',
+        conf.dist + '/ngmin/app/goal/services/user.js',
+        conf.dist + '/ngmin/app/goal/services/server.js',
+        conf.dist + '/ngmin/app/goal/services/alert.js',
 
-    conf.dist + '/ngmin/common/**/*.js',
-    conf.dist + '/ngmin/app/app.js',
-    conf.dist + '/ngmin/app/goal/services/goal.js',
-    conf.dist + '/ngmin/app/goal/services/modal.js',
-    conf.dist + '/ngmin/app/goal/services/category.js',
-    conf.dist + '/ngmin/app/goal/services/report.js',
-    conf.dist + '/ngmin/app/goal/services/tpl.js',
-    conf.dist + '/ngmin/app/goal/services/user.js',
-    conf.dist + '/ngmin/app/goal/services/server.js',
-    conf.dist + '/ngmin/app/goal/services/alert.js',
-
-    conf.dist + '/ngmin/app/goal/controllers/*.js',
-    conf.dist + '/ngmin/app/goal/directives/*.js'
+        conf.dist + '/ngmin/app/goal/controllers/*.js',
+        conf.dist + '/ngmin/app/goal/directives/*.js'
 ];
 
-gulp.task('fonts', function() {
+gulp.task('fonts', function () {
     gulp.src(conf.app + '/vendor/components-font-awesome/fonts/*')
         .pipe(gulp.dest(conf.dist + '/fonts/'));
 });
 
-gulp.task('js.copy', function() {
+gulp.task('js.copy', function () {
 
     gulp.src(conf.app + '/vendor/angular-route/angular-route*')
         .pipe(gulp.dest(conf.dist));
@@ -81,19 +77,19 @@ gulp.task('js.copy', function() {
 gulp.task('js.ngmin', function () {
 
     gulp.src(conf.app + '/app/**/*.js')
-        .pipe(ngmin())
+        .pipe(ngannotate())
         .pipe(gulp.dest(conf.dist + '/ngmin/app'));
 
-    gulp.src([conf.app +  '/vendor/angular-elastic/elastic.js', conf.app +  '/vendor/angular/angular.min.js'])
-        .pipe(ngmin())
+    gulp.src([conf.app + '/vendor/angular-elastic/elastic.js', conf.app + '/vendor/angular/angular.min.js'])
+        .pipe(ngannotate())
         .pipe(gulp.dest(conf.dist + '/ngmin/vendor'));
 
-    gulp.src([conf.app +  '/common/**/*.js'])
-        .pipe(ngmin())
+    gulp.src([conf.app + '/common/**/*.js'])
+        .pipe(ngannotate())
         .pipe(gulp.dest(conf.dist + '/ngmin/common'));
 
     gulp.src(conf.app + '/../../../vendor/nizsheanez/yii2-websocket-application/src/wamp/assets/js/*')
-        .pipe(ngmin())
+        .pipe(ngannotate())
         .pipe(gulp.dest(conf.dist + "ngmin/websocket"));
 
 
@@ -123,45 +119,33 @@ gulp.task('less', function () {
         }))
         .pipe(concat('site.css'))
         .pipe(gulp.dest(conf.dist + '/css'))
-        .pipe(livereload(server));
+        ;
 });
 
 gulp.task('clean', function () {
     return gulp.src([conf.dist], {read: false})
-        .pipe(clean());
-});
-
-gulp.task('php.tests.unit', function () {
-    gulp.src('')
-        .pipe(shell('php ../vendor/bin/codecept run unit | grep -v " Ok"', {
-            cwd: conf.root + "/frontend"
-        }));
+        .pipe(rimraf());
 });
 
 gulp.task('js', ['js.compress']);
-gulp.task('js.dev', ['js.concat'], function() {
-    gulp.src('').pipe(livereload(server));
+gulp.task('js.dev', ['js.concat'], function () {
+    gulp.src('');
 });
 
-gulp.task('build', ['clean'], function() {
+gulp.task('build', ['clean'], function () {
     gulp.start('js', 'less', 'fonts');
 });
-gulp.task('build.dev', ['clean'], function() {
-    gulp.start('fonts', 'js.dev', 'less', 'php.tests.unit');
+gulp.task('build.dev', ['clean'], function () {
+    gulp.start('fonts', 'js.dev', 'less');
 });
 
 gulp.task('watch', ['build.dev'], function () {
 
-    // Listen on port 35729
-    server.listen(35729, function (err) {
-        if (err) {
-            return console.log(err)
-        }
+    livereload.listen();
 
-        gulp.watch(conf.app + '/**/*.js', ['js.dev']);
-        gulp.watch([conf.root + 'frontend/**/*.php', conf.root + 'common/**/*.php'], ['php.tests.unit']);
-        gulp.watch(conf.app + 'less/**/*', ['less']);
+    gulp.watch(conf.app + '/**/*.js', ['js.dev']).on('change', livereload.changed);
+    gulp.watch(conf.app + 'less/**/*', ['less']).on('change', livereload.changed);
 
 //        gulp.watch([conf.app + '/**/*', conf.root + '/views/layouts/main.php', conf.app + '../less/**/*'], ['livereload']);
-    });
+
 });

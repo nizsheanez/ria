@@ -3,3 +3,4 @@ ria
 atlassian-ide-plugin.xml
 static/vendor/*
 static/assets/*
+static/node_modules/*

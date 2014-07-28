@@ -5,14 +5,13 @@ import (
 	"os"
 	"fmt"
 	"path/filepath"
+	"strings"
 )
 
 type Less struct {}
 
-func (this *Less) HandleExtensions() []string {
-	return []string{
-		".less",
-	}
+func (this *Less) CanConvert(file string) bool {
+	return strings.HasSuffix(file, ".less")
 }
 
 func (this *Less) Convert(sourcePath string, targetPath string, stdout chan int, stderr chan error) {

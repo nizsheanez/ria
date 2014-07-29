@@ -33,6 +33,8 @@ angular.module('eg.components', []).service('server', function () {
     }
 
     function onDisconnect(code, reason) {
+        console.log('Disconnect!')
+
         sess = null;
         console.log("Connection lost (" + code + " " + reason + ")");
     }
@@ -67,9 +69,7 @@ angular.module('eg.components').factory('$socketResource', ['server', function (
         return dst;
     }
 
-
     //server.subscribe(prefix + "user", onEvent);
-
     function publishEvent() {
         sess.publish(prefix + "user", {a: "foo", b: "bar", c: 23});
     }
@@ -103,7 +103,7 @@ angular.module('eg.components').factory('$socketResource', ['server', function (
 
     Route.prototype = {
         url: function (action) {
-            return server.prefix + this.controller + '/' + action;
+            return server.prefix //+ this.controller + '/' + action;
         }
     };
 
@@ -131,7 +131,9 @@ angular.module('eg.components').factory('$socketResource', ['server', function (
                 }
 
                 $.active++;
+                console.log(route.url(url))
                 var promise = server.call(route.url(url), params).then(function (response) {
+                    console.log(response)
                     $.active--;
 
                     var data = response.data,
@@ -142,7 +144,7 @@ angular.module('eg.components').factory('$socketResource', ['server', function (
                         // jshint -W018
                         if (angular.isArray(data) !== (!!action.isArray)) {
                             throw $resourceMinErr('badcfg', 'Error in resource configuration. Expected ' +
-                                'response to contain an {0} but got an {1}',
+                                    'response to contain an {0} but got an {1}',
                                 action.isArray ? 'array' : 'object', angular.isArray(data) ? 'array' : 'object');
                         }
                         // jshint +W018

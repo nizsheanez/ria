@@ -2617,7 +2617,7 @@ var AUTOBAHNJS_VERSION = '?.?.?';
 
     ab._debugrpc = false;
     ab._debugpubsub = false;
-    ab._debugws = false;
+    ab._debugws = true;
     ab._debugconnect = false;
 
     ab.debug = function (debugWamp, debugWs, debugConnect) {

@@ -11,5 +11,5 @@ func init() {
 	// WebSocket.
 	beego.Router("/ws", &controllers.WebSocketController{})
 	beego.Router("/ws/join", &controllers.WebSocketController{}, "get:Join")
-	beego.Router("/ws/user", &controllers.WebSocketController{}, "get:User")
+	beego.Router("/ws/user", &controllers.WebSocketController{})
 }

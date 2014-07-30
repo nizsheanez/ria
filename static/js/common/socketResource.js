@@ -38,7 +38,7 @@ angular.module('eg.components', []).service('server', function () {
     }
 
     // connect to WAMP server
-    ab.connect('ws://' + document.domain + ':8081/', onConnect, onDisconnect, {
+    autobahn.connect('ws://' + document.domain + ':8081/', onConnect, onDisconnect, {
         'maxRetries': 60000,
         'retryDelay': 1000
     });

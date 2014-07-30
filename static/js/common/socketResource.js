@@ -33,14 +33,12 @@ angular.module('eg.components', []).service('server', function () {
     }
 
     function onDisconnect(code, reason) {
-        console.log('Disconnect!')
-
         sess = null;
         console.log("Connection lost (" + code + " " + reason + ")");
     }
 
     // connect to WAMP server
-    ab.connect('ws://' + document.domain + ':8080/', onConnect, onDisconnect, {
+    ab.connect('ws://' + document.domain + ':8081/', onConnect, onDisconnect, {
         'maxRetries': 60000,
         'retryDelay': 1000
     });
@@ -69,7 +67,9 @@ angular.module('eg.components').factory('$socketResource', ['server', function (
         return dst;
     }
 
+
     //server.subscribe(prefix + "user", onEvent);
+
     function publishEvent() {
         sess.publish(prefix + "user", {a: "foo", b: "bar", c: 23});
     }
@@ -103,7 +103,7 @@ angular.module('eg.components').factory('$socketResource', ['server', function (
 
     Route.prototype = {
         url: function (action) {
-            return server.prefix //+ this.controller + '/' + action;
+            return this.controller + '/' + action;
         }
     };
 
@@ -131,7 +131,6 @@ angular.module('eg.components').factory('$socketResource', ['server', function (
                 }
 
                 $.active++;
-                console.log(route.url(url))
                 var promise = server.call(route.url(url), params).then(function (response) {
                     console.log(response)
                     $.active--;

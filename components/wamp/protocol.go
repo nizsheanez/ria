@@ -4,90 +4,90 @@ import (
 	"github.com/astaxie/beego"
 	"github.com/gorilla/websocket"
 	"net/http"
-	"io"
 	"errors"
 	"fmt"
 	"encoding/json"
 )
 
 const (
-	MSG_WELCOME = iota
-	MSG_PREFIX
-	MSG_CALL
-	MSG_CALL_RESULT
-	MSG_CALL_ERROR
-	MSG_SUBSCRIBE
-	MSG_UNSUBSCRIBE
-	MSG_PUBLISH
-	MSG_EVENT
+	MSG_HELLO        = 1
+	MSG_WELCOME      = 2
+	MSG_ABORT        = 3
+	MSG_CHALLENGE    = 4
+	MSG_AUTHENTICATE = 5
+	MSG_GOODBYE      = 6
+	MSG_HEARTBEAT    = 7
+	MSG_ERROR        = 8
+
+	MSG_PUBLISH   = 16
+	MSG_PUBLISHED = 17
+
+	MSG_SUBSCRIBE    = 32
+	MSG_SUBSCRIBED   = 33
+	MSG_UNSUBSCRIBE  = 34
+	MSG_UNSUBSCRIBED = 35
+	MSG_EVENT        = 36
+
+	MSG_CALL   = 48
+	MSG_CANCEL = 49
+	MSG_RESULT = 50
+
+	MSG_REGISTER     = 64
+	MSG_REGISTERED   = 65
+	MSG_UNREGISTER   = 66
+	MSG_UNREGISTERED = 67
+	MSG_INVOCATION   = 68
+	MSG_INTERRUPT    = 69
+	MSG_YIELD        = 70
 )
 
 type Message struct{
-	MessageType int
 	Id          int
-	Url         string
-	Data        []interface{}
+	Data        map[string]interface{}
 }
 
 type Protocol struct {
-	Ctx WampContext
 }
 
 type WampContext interface {
-	Call(callId string, procUri string, params interface{})
+	Call(callId string, procUri string, params map[string]interface{})
 	Subscribe()
+	SetPrefix(interface{}, interface{})
 	Unsubscribe()
+	Done()
 }
 
 var upgrader = websocket.Upgrader{
 	ReadBufferSize:  4096,
 	WriteBufferSize: 4096,
+	Subprotocols: []string{"wamp"},
 	CheckOrigin: func(r *http.Request) bool {
 		return true
 	},
 }
 
-func (this *Protocol) OnConnect(request *http.Request, response *http.ResponseWriter) (id int64, ws *websocket.Conn, err error) {
-	id, ws, err = this.Upgrade(request, response)
+func (this *Message) String() string {
+	r := make([]interface{}, 3)
+	arr := append(r, this.Id, this.Data)
+	str, err := json.Marshal(arr)
 	if err != nil {
-		return
+		panic(err)
 	}
+	return string(str)
+}
 
-	err = this.welcome(ws)
+func (this *Protocol) OnConnect(request *http.Request, response *http.ResponseWriter) (ws *websocket.Conn, err error) {
+	ws, err = this.Upgrade(request, response)
 	if err != nil {
-		beego.Error(err)
 		return
 	}
 
 	return
 }
 
-func (this *Protocol) ReadLoop(ws *websocket.Conn) (err error) {
-	for {
-		beego.Info("wait for message...")
-		mt, rawMessage, err := ws.ReadMessage()
-		if err != nil {
-			if err != io.EOF {
-				beego.Error("read:", err)
-			}
-			return err
-		}
-
-		if mt == websocket.TextMessage {
-			err = this.onMessage(rawMessage)
-			if err != nil {
-				beego.Error(err)
-				return err
-			}
-		} else {
-			panic("Can handle only text now")
-		}
-	}
-}
-
-func (this *Protocol) Upgrade(request *http.Request, response *http.ResponseWriter) (id int64, ws *websocket.Conn, err error) {
+func (this *Protocol) Upgrade(request *http.Request, response *http.ResponseWriter) (ws *websocket.Conn, err error) {
 	// Upgrade from http request to WebSocket.
-	headers := http.Header{"Set-Cookie": {"sessionID=1234"}, "Sec-WebSocket-Protocol": {"wamp"}}
+	headers := http.Header{"Set-Cookie": {"sessionID=1234"}}
 	ws, err = upgrader.Upgrade(*response, request, headers)
 	if _, ok := err.(websocket.HandshakeError); ok {
 		http.Error(*response, "Not a websocket handshake", 400)
@@ -97,21 +97,18 @@ func (this *Protocol) Upgrade(request *http.Request, response *http.ResponseWrit
 		return
 	}
 
-	id = 1
-
-	return id, ws, nil
+	return ws, nil
 }
 
-
-func (this *Protocol) welcome(ws *websocket.Conn) (err error) {
+func (this *Protocol) Welcome(ws *websocket.Conn, id int) (err error) {
 	//WMAP Welcome
 	beego.Info("Open connection, say Welcome")
-	welcomeMessage, err := json.Marshal([]int{0, 1})
+	welcomeMessage, err := json.Marshal([]int{0, id})
 	if err != nil {
 		return
 	}
 
-	err = ws.WriteMessage(1, welcomeMessage)
+	err = ws.WriteMessage(websocket.TextMessage, welcomeMessage)
 	if err != nil {
 		return
 	}
@@ -120,11 +117,34 @@ func (this *Protocol) welcome(ws *websocket.Conn) (err error) {
 	return nil
 }
 
-func (this *Protocol) onMessage(rawMessage []byte) (err error) {
+func (this *Protocol) ReadMessage(ws *websocket.Conn, ctx WampContext) error {
+	mt, p, err := ws.ReadMessage()
+	if err != nil {
+		return err
+	}
+
+	if mt != websocket.TextMessage {
+		panic(fmt.Sprintf("Can handle only text now, given: %v", mt))
+	}
+
+	err = this.OnMessage(p, ctx)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func (this *Protocol) WriteMessage(ws *websocket.Conn, msg Message) error {
+	json.Marshal()
+	ws.WriteControl(1, )
+	return nil
+}
+
+func (this *Protocol) OnMessage(rawMessage []byte, ctx WampContext) (err error) {
 	var msg []interface{}
 	err = json.Unmarshal(rawMessage, &msg)
 	if err != nil {
-		return
+		return err
 	}
 
 	messageTypeStr, ok := msg[0].(float64)
@@ -134,7 +154,7 @@ func (this *Protocol) onMessage(rawMessage []byte) (err error) {
 
 	switch int(messageTypeStr) {
 	case MSG_PREFIX:
-		//$this->context->setPrefix($json[1], $json[2]);
+		ctx.SetPrefix(msg[1], msg[2]);
 	case MSG_CALL:
 		callId, ok := msg[1].(string)
 		if !ok {
@@ -144,13 +164,15 @@ func (this *Protocol) onMessage(rawMessage []byte) (err error) {
 		if !ok {
 			return errors.New("Cant parse procUri")
 		}
-		params := msg[3]
-
-		this.Ctx.Call(callId, procUri, params)
+		params, ok := msg[3].(map[string]interface{})
+		if !ok {
+			return errors.New(fmt.Sprintf("Can't cast %v to map[string]interface {}", msg[3]))
+		}
+		ctx.Call(callId, procUri, params)
 	case MSG_SUBSCRIBE:
-		//                $this->context->subscribe($this->getUri($json[1]));
+		//		ctx.Subscribe(this.getUri(msg[1]));
 	case MSG_UNSUBSCRIBE:
-		//	$this->context->unsubscribe($this->getUri($json[1]));
+		//		ctx.Unsubscribe(this.getUri(msg[1]));
 	case MSG_PUBLISH:
 		/*
 		$exclude = (array_key_exists(3, $json) ? $json[3] : null);
@@ -171,4 +193,8 @@ func (this *Protocol) onMessage(rawMessage []byte) (err error) {
 	}
 
 	return nil
+}
+
+func (this *Protocol) getUri(a interface{}) {
+
 }

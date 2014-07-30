@@ -71,10 +71,6 @@ func (this *Client) Unsubscribe() {
 	beego.Info("Implement Unsubscribe!!!")
 }
 
-func (this *Client) SetPrefix(a interface {}, b interface {}) {
-	beego.Info("Implement SetPrefix!!!")
-}
-
 func (c *Client) Conn() *websocket.Conn {
 	return c.ws
 }

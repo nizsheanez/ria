@@ -52,7 +52,6 @@ type Protocol struct {
 type WampContext interface {
 	Call(callId string, procUri string, params map[string]interface{})
 	Subscribe()
-	SetPrefix(interface{}, interface{})
 	Unsubscribe()
 	Done()
 }
@@ -135,8 +134,7 @@ func (this *Protocol) ReadMessage(ws *websocket.Conn, ctx WampContext) error {
 }
 
 func (this *Protocol) WriteMessage(ws *websocket.Conn, msg Message) error {
-	json.Marshal()
-	ws.WriteControl(1, )
+	ws.WriteMessage(1, []byte(msg.String()))
 	return nil
 }
 
@@ -153,8 +151,6 @@ func (this *Protocol) OnMessage(rawMessage []byte, ctx WampContext) (err error) 
 	}
 
 	switch int(messageTypeStr) {
-	case MSG_PREFIX:
-		ctx.SetPrefix(msg[1], msg[2]);
 	case MSG_CALL:
 		callId, ok := msg[1].(string)
 		if !ok {

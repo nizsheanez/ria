@@ -77,12 +77,20 @@ func AppAsset() *components.Asset {
 			"ui-utils.min.js",
 		)
 
+//	when := components.NewAsset().
+//		SetBaseUrl("static/vendor/when").
+//		SetJs(
+//		"when.js",
+//		)
+
 	autobahn := components.NewAsset().
 		SetBaseUrl("static/js/common").
 		SetJs(
-			"autobahn.js",
+			"autobahn2.js",
 			"socketResource.js",
 		)
+//		.SetDependencies(when)
+
 
 	sockjs := components.NewAsset().
 		SetBaseUrl("static/vendor/sockjs").

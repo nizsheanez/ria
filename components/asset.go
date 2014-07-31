@@ -65,12 +65,23 @@ func (this *Asset) Js() (string, error) {
 		}
 		result += content
 	}
-
 	for _, js := range this.js {
-		result += "<script src=\""+this.baseUrl+"/"+js+"\"></script>\n"
+		result += "<script src=\""+this.buildUrl(js)+"\"></script>\n"
 	}
 
 	return result, nil
+}
+
+func (this *Asset) buildUrl(relativeUrl string) (url string) {
+	if strings.HasPrefix(relativeUrl, "http:") ||
+			strings.HasPrefix(relativeUrl, "https:") ||
+			strings.HasPrefix(relativeUrl, "//") {
+		url = relativeUrl
+	} else {
+		url = this.baseUrl+"/"+relativeUrl
+	}
+
+	return
 }
 
 func (this *Asset) Css() (string, error) {
@@ -85,7 +96,7 @@ func (this *Asset) Css() (string, error) {
 	}
 
 	for _, css := range this.css {
-		result += "<link href=\""+this.baseUrl+"/"+css+"\" rel=\"stylesheet\">\n"
+		result += "<link href=\""+this.buildUrl(css)+"\" rel=\"stylesheet\">\n"
 	}
 
 	return result, nil

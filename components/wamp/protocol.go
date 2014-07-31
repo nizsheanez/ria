@@ -51,6 +51,7 @@ type Protocol struct {
 
 type WampContext interface {
 	Call(callId string, procUri string, params map[string]interface{})
+	Welcome() error
 	Subscribe()
 	Unsubscribe()
 	Done()
@@ -59,7 +60,7 @@ type WampContext interface {
 var upgrader = websocket.Upgrader{
 	ReadBufferSize:  4096,
 	WriteBufferSize: 4096,
-	Subprotocols: []string{"wamp"},
+	Subprotocols: []string{"wamp.2.json"},
 	CheckOrigin: func(r *http.Request) bool {
 		return true
 	},
@@ -102,7 +103,7 @@ func (this *Protocol) Upgrade(request *http.Request, response *http.ResponseWrit
 func (this *Protocol) Welcome(ws *websocket.Conn, id int) (err error) {
 	//WMAP Welcome
 	beego.Info("Open connection, say Welcome")
-	welcomeMessage, err := json.Marshal([]int{0, id})
+	welcomeMessage, err := json.Marshal([]int{MSG_WELCOME, id})
 	if err != nil {
 		return
 	}
@@ -151,6 +152,11 @@ func (this *Protocol) OnMessage(rawMessage []byte, ctx WampContext) (err error) 
 	}
 
 	switch int(messageTypeStr) {
+	case MSG_HELLO:
+		err := ctx.Welcome()
+		if err != nil {
+			return err
+		}
 	case MSG_CALL:
 		callId, ok := msg[1].(string)
 		if !ok {

@@ -1,5 +1,7 @@
 'use strict';
 
+var AUTOBAHN_DEBUG = true;
+
 angular.module('eg.components', []).service('server', function () {
     var prefix = 'http://' + document.domain + '/ws/';
     var socketDefer = $.Deferred();
@@ -38,11 +40,18 @@ angular.module('eg.components', []).service('server', function () {
     }
 
     // connect to WAMP server
-    autobahn.connect('ws://' + document.domain + ':8081/', onConnect, onDisconnect, {
-        'maxRetries': 60000,
-        'retryDelay': 1000
-    });
+    var connection = new autobahn.Connection({url: 'ws://' + document.domain + ':8081/', realm: 'realm1'});
+    connection.onopen = function (session) {
+        console.log("!!!!!!!")
+    }
 
+//        connection.onopen = onConnect;
+    connection.onclose = onDisconnect;
+//    autobahn.connect(, , , {
+//        'maxRetries': 60000,
+//        'retryDelay': 1000
+//    });
+    connection.open()
     sess.prefix = prefix;
     return sess;
 });

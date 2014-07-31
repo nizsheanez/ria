@@ -95,15 +95,6 @@ func (this *Server) ServeHTTP(response http.ResponseWriter, request *http.Reques
 
 	//create client
 	client := NewClient(ws, this)
-
-	//say WMAP Welcome
-	err = client.Welcome()
-	if err != nil {
-		this.Err(err)
-
-		return
-	}
-
 	this.Add(client)
 	client.Listen()
 }

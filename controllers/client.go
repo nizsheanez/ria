@@ -71,47 +71,46 @@ func (this *Client) Unsubscribe() {
 	beego.Info("Implement Unsubscribe!!!")
 }
 
-func (c *Client) Conn() *websocket.Conn {
-	return c.ws
+func (this *Client) Conn() *websocket.Conn {
+	return this.ws
 }
 
-func (c *Client) Write(msg *Message) {
+func (this *Client) Write(msg *Message) {
 	select {
-	case c.ch <- msg:
+	case this.ch <- msg:
 	default:
-		c.server.Del(c)
-		err := fmt.Errorf("client %d is disconnected.", c.id)
-		c.server.Err(err)
+		this.server.Del(this)
+		err := fmt.Errorf("client %d is disconnected.", this.id)
+		this.server.Err(err)
 	}
 }
 
-func (c *Client) Done() {
-	c.doneCh <- true
+func (this *Client) Done() {
+	this.doneCh <- true
 }
 
 // Listen Write and Read request via chanel
-func (c *Client) Listen() {
-	go c.listenWrite()
-	c.listenRead()
+func (this *Client) Listen() {
+	go this.listenWrite()
+	this.listenRead()
 }
 
 // Listen write request via chanel
-func (c *Client) listenWrite() {
-	log.Println("Listening write to client")
+func (this *Client) listenWrite() {
 	for {
 		// send message to the client
 		select {
-		case msg := <-c.ch:
+		case msg := <-this.ch:
 			log.Println("Send:", msg)
-			err := websocket.WriteJSON(c.ws, msg)
+			err := websocket.WriteJSON(this.ws, msg)
 			if err != nil {
-				c.server.Err(err)
+				this.server.Err(err)
 			}
 
 			// receive done request
-		case <-c.doneCh:
-			c.server.Del(c)
-		c.doneCh <- true // for listenRead method
+		case <-this.doneCh:
+			this.server.Del(this)
+		this.doneCh <- true // for listenRead method
 			return
 		}
 	}

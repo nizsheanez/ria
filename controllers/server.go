@@ -9,7 +9,6 @@ import (
 
 // Chat server.
 type Server struct {
-	pattern   string
 	protocol  *wamp.Protocol
 	messages  []*Message
 	clients   map[int]*Client
@@ -18,11 +17,10 @@ type Server struct {
 	sendAllCh chan *Message
 	doneCh    chan bool
 	errCh     chan error
-//	routes    map[string]beego.ControllerInterface
 }
 
 // Create new chat server.
-func NewServer(pattern string) *Server {
+func NewServer() *Server {
 	messages := []*Message{}
 	clients := make(map[int]*Client)
 	addCh := make(chan *Client)
@@ -33,7 +31,6 @@ func NewServer(pattern string) *Server {
 	protocol := &wamp.Protocol{}
 
 	server := &Server{
-		pattern,
 		protocol,
 		messages,
 		clients,
@@ -101,14 +98,11 @@ func (this *Server) ServeHTTP(response http.ResponseWriter, request *http.Reques
 
 // Listen and serve.
 // It serves client connection and broadcast request.
-func (this *Server) Listen() {
-	go http.ListenAndServe(this.pattern, this)
-
+func (this *Server) ListenAndServe() {
 	for {
-		// Add new a client
 		select {
+		// Add new a client
 		case c := <-this.addCh:
-			beego.Info("Listening server... " + this.pattern)
 			this.clients[c.id] = c
 			this.sendPastMessages(c)
 

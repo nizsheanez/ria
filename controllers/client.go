@@ -50,13 +50,13 @@ func NewClient(ws *websocket.Conn, server *Server) *Client {
 }
 
 //WampContext interface
-func (this *Client) Call(callId string, uri string, params map[string]interface{}) {
-	beego.Info(fmt.Sprintf("Call: , %v, %v, %v", callId, uri, params))
+func (this *Client) Call(callId int, uri string, arguments []interface{}) {
+	beego.Info(fmt.Sprintf("Call: %d, %v, %v", callId, uri, arguments))
 
 //	parts := strings.Split(uri, '/')
 
 	controller := &models.User{}
-	params, err := controller.View(params)
+	_, err := controller.View(arguments)
 
 	if err != nil {
 		this.server.Err(err)

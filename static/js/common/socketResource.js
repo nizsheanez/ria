@@ -1,6 +1,5 @@
 'use strict';
 
-var AUTOBAHN_DEBUG = true;
 
 angular.module('eg.components', []).service('server', function () {
     var prefix = 'http://' + document.domain + '/ws/';
@@ -41,11 +40,7 @@ angular.module('eg.components', []).service('server', function () {
 
     // connect to WAMP server
     var connection = new autobahn.Connection({url: 'ws://' + document.domain + ':8081/', realm: 'realm1'});
-    connection.onopen = function (session) {
-        console.log("!!!!!!!")
-    }
-
-//        connection.onopen = onConnect;
+    connection.onopen = onConnect;
     connection.onclose = onDisconnect;
 //    autobahn.connect(, , , {
 //        'maxRetries': 60000,
@@ -130,7 +125,7 @@ angular.module('eg.components').factory('$socketResource', ['server', function (
             var value = action.isArray ? [] : new Resource();
             Resource[name] = function (url, params, callback) {
                 if (!action.isArray) {
-                    params = params ? params : {};
+                    params = params ? params : [];
                     if (typeof params !== 'object') {
                         alert('params Must be object!');
                     }
@@ -140,8 +135,9 @@ angular.module('eg.components').factory('$socketResource', ['server', function (
                 }
 
                 $.active++;
+
                 var promise = server.call(route.url(url), params).then(function (response) {
-                    console.log(response)
+                    console.log(111)
                     $.active--;
 
                     var data = response.data,

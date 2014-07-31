@@ -42,15 +42,36 @@ const (
 )
 
 type Message struct{
-	Id          int
-	Data        map[string]interface{}
+	Id           int
+	Realm        string
+	Details      Details
 }
 
+type Details struct {
+	Roles    *Roles `json:"roles"`
+}
+
+type Roles map[string]*Role
+
+type Role struct {
+	Features *Features `json:"features"`
+}
+
+type Features map[string]bool
+
+//[1,"realm1",{
+//	"roles":{
+//		"caller":{"features":{"caller_identification":true,"progressive_call_results":true}},
+//		"callee":{"features":{"progressive_call_results":true}},
+//		"publisher":{"features":{"subscriber_blackwhite_listing":true,"publisher_exclusion":true,"publisher_identification":true}},
+//		"subscriber":{"features":{"publisher_identification":true}}
+//	}
+//}]
 type Protocol struct {
 }
 
 type WampContext interface {
-	Call(callId string, procUri string, params map[string]interface{})
+	Call(callId int, procUri string, arguments []interface{})
 	Welcome() error
 	Subscribe()
 	Unsubscribe()
@@ -68,7 +89,7 @@ var upgrader = websocket.Upgrader{
 
 func (this *Message) String() string {
 	r := make([]interface{}, 3)
-	arr := append(r, this.Id, this.Data)
+	arr := append(r, this.Id, this.Details)
 	str, err := json.Marshal(arr)
 	if err != nil {
 		panic(err)
@@ -103,7 +124,29 @@ func (this *Protocol) Upgrade(request *http.Request, response *http.ResponseWrit
 func (this *Protocol) Welcome(ws *websocket.Conn, id int) (err error) {
 	//WMAP Welcome
 	beego.Info("Open connection, say Welcome")
-	welcomeMessage, err := json.Marshal([]int{MSG_WELCOME, id})
+	message := []interface{}{
+		MSG_WELCOME,
+		id,
+		&Details{
+			Roles: &Roles{
+				"broker": &Role{
+					&Features{
+						"publisher_exclusion": true,
+						"publisher_identification": true,
+						"subscriber_blackwhite_listing": true,
+					},
+				},
+				"dealer": &Role{
+					&Features{
+						"caller_identification": true,
+						"progressive_call_results": true,
+					},
+				},
+			},
+		},
+	}
+
+	welcomeMessage, err := json.Marshal(message)
 	if err != nil {
 		return
 	}
@@ -134,7 +177,7 @@ func (this *Protocol) ReadMessage(ws *websocket.Conn, ctx WampContext) error {
 	return nil
 }
 
-func (this *Protocol) WriteMessage(ws *websocket.Conn, msg Message) error {
+func (this *Protocol) WriteMessage(ws *websocket.Conn, msg Message) (err error) {
 	ws.WriteMessage(1, []byte(msg.String()))
 	return nil
 }
@@ -153,24 +196,47 @@ func (this *Protocol) OnMessage(rawMessage []byte, ctx WampContext) (err error) 
 
 	switch int(messageTypeStr) {
 	case MSG_HELLO:
-		err := ctx.Welcome()
+		var messageType int
+		var realm string
+		var details Details
+
+		message := []interface{} {
+			&messageType,
+			&realm,
+			&details,
+		}
+		err = json.Unmarshal(rawMessage, &message)
+
+		if err != nil {
+			return err
+		}
+
+		err = ctx.Welcome()
 		if err != nil {
 			return err
 		}
 	case MSG_CALL:
-		callId, ok := msg[1].(string)
-		if !ok {
-			return errors.New("Cant parse callId")
+		var messageType int
+		var callId int
+		var options map[string]interface {}
+		var uri string
+		var arguments []interface {}
+
+		message := []interface{} {
+			&messageType,
+			&callId,
+			&options,
+			&uri,
+			&arguments,
 		}
-		procUri, ok := msg[2].(string)
-		if !ok {
-			return errors.New("Cant parse procUri")
+		err = json.Unmarshal(rawMessage, &message)
+		if err != nil {
+			beego.Info(fmt.Sprintf("%s %v %v", rawMessage, err, message))
+			return err
 		}
-		params, ok := msg[3].(map[string]interface{})
-		if !ok {
-			return errors.New(fmt.Sprintf("Can't cast %v to map[string]interface {}", msg[3]))
-		}
-		ctx.Call(callId, procUri, params)
+
+		//TODO
+		ctx.Call(callId, uri, arguments)
 	case MSG_SUBSCRIBE:
 		//		ctx.Subscribe(this.getUri(msg[1]));
 	case MSG_UNSUBSCRIBE:

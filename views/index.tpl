@@ -5,6 +5,9 @@
     <title>{{ .Title }}</title>
     {{ .Css | str2html }}
 </head>
+    <script>
+        var AUTOBAHN_DEBUG = true;
+    </script>
 <body>
 <div class="main-container ">
     <div class="container">

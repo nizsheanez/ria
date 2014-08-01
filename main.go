@@ -5,9 +5,14 @@ import (
 	"github.com/astaxie/beego"
 	"ria/controllers"
 	"net/http"
+	"github.com/astaxie/beego/orm"
+	_ "github.com/go-sql-driver/mysql"
 )
 
 func main() {
+	orm.RegisterDriver("mysql", orm.DR_MySQL)
+	orm.RegisterDataBase("default", "mysql", "root:asharov@/blog3?charset=utf8")
+
 	//websocket server
 	wampServer := controllers.NewServer()
 	go wampServer.ListenAndServe()

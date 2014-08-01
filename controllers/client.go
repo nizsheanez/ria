@@ -7,6 +7,7 @@ import (
 	"github.com/gorilla/websocket"
 	"github.com/astaxie/beego"
 	"ria/models"
+	"ria/components/wamp"
 )
 
 const channelBufSize = 100
@@ -14,12 +15,8 @@ const channelBufSize = 100
 var maxId int = 0
 
 type Message struct {
-	Author string `json:"author"`
-	Body   string `json:"body"`
-}
-
-func (self *Message) String() string {
-	return self.Author + " says " + self.Body
+	Id int
+	Data map[string]interface {}
 }
 
 // Chat client.
@@ -56,11 +53,17 @@ func (this *Client) Call(callId int, uri string, arguments []interface{}) {
 //	parts := strings.Split(uri, '/')
 
 	controller := &models.User{}
-	_, err := controller.View(arguments)
+	data, err := controller.View(arguments)
 
 	if err != nil {
 		this.server.Err(err)
 	}
+
+	msg := &Message{
+		Id: callId,
+		Data: data,
+	}
+	this.Write(msg)
 }
 
 func (this *Client) Subscribe() {
@@ -102,7 +105,21 @@ func (this *Client) listenWrite() {
 		select {
 		case msg := <-this.ch:
 			log.Println("Send:", msg)
-			err := websocket.WriteJSON(this.ws, msg)
+
+			options := map[string]interface {}{
+				"progress": false,
+			}
+			b := []interface {}{
+				msg.Data,
+			}
+			str := []interface {}{
+				wamp.MSG_RESULT,
+				msg.Id,
+				options,
+				b,
+				msg.Data,
+			}
+			err := websocket.WriteJSON(this.ws, str)
 			if err != nil {
 				this.server.Err(err)
 			}

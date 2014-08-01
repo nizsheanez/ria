@@ -14,9 +14,8 @@ angular.module('eg.goal').factory('User', ['$rootScope', '$socketResource', '$re
 //        }
 //    );
     var userModel = new User;
-    userModel.$get().then(function (user) {
-        console.log(1,user);
-    });
+    userModel.$get();
+
 //    User.get().$promise.then(function (user) {
 //        console.log(user);
 //    });
@@ -32,7 +31,7 @@ angular.module('eg.goal').factory('User', ['$rootScope', '$socketResource', '$re
         get: function (callback) {
             var user = service.instantiate(storage.init);
 
-            callback();
+            callback(user);
         },
         getAll: function () {
             return User;

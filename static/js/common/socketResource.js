@@ -137,10 +137,9 @@ angular.module('eg.components').factory('$socketResource', ['server', function (
                 $.active++;
 
                 var promise = server.call(route.url(url), params).then(function (response) {
-                    console.log(111)
                     $.active--;
 
-                    var data = response.data,
+                    var data = response.kwargs,
                         promise = value.$promise;
 
                     if (data) {

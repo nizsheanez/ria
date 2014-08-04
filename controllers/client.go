@@ -53,7 +53,7 @@ func (this *Client) Call(callId int, uri string, arguments []interface{}) {
 //	parts := strings.Split(uri, '/')
 
 	controller := &models.User{}
-	data, err := controller.View(arguments)
+	data, err := controller.Get(arguments)
 
 	if err != nil {
 		this.server.Err(err)

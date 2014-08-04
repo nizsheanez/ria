@@ -13,12 +13,10 @@ angular.module('eg.goal').factory('User', ['$rootScope', '$socketResource', '$re
 //            'delete': {method: 'DELETE'}
 //        }
 //    );
-    var userModel = new User;
-    userModel.$get();
 
-//    User.get().$promise.then(function (user) {
-//        console.log(user);
-//    });
+    var userModel = new User;
+    userModel.$get([1]);
+
 
     var service = {
         instantiate: function (raw) {

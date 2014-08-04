@@ -3,7 +3,9 @@ package models
 import (
 	"github.com/astaxie/beego/orm"
 	"github.com/astaxie/beego"
+	"strconv"
 	"fmt"
+	"errors"
 )
 
 type Goal struct {
@@ -39,12 +41,23 @@ func init() {
 	orm.RegisterModel(new(User), new(Goal))
 }
 
-func (this *User) View(arguments []interface{}) (map[string]interface{}, error) {
+func (this *User) Get(arguments []interface{}) (result map[string]interface{}, err error) {
 	o := orm.NewOrm()
 	o.Using("default")
 
-	user := &User{Id: 1}
-	err := o.Read(user)
+	beego.Info(fmt.Sprintf("%v",arguments[0]))
+	beego.Info(fmt.Sprintf("%v",arguments))
+	idStr, ok := arguments[0].(string)
+	if !ok {
+		return nil, errors.New("User id is required")
+	}
+	id, err := strconv.Atoi(idStr)
+	if err != nil {
+		return nil, err
+	}
+
+	user := &User{Id: id}
+	err = o.Read(user)
 
 	o.LoadRelated(user, "Goals")
 
@@ -52,9 +65,9 @@ func (this *User) View(arguments []interface{}) (map[string]interface{}, error) 
 		return nil, err
 	}
 
-	data := map[string]interface{}{
+	result = map[string]interface{}{
 //		"email":user.Email,
 	}
-	return data, nil
+	return result, nil
 }
 

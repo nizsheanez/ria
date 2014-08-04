@@ -139,7 +139,7 @@ angular.module('eg.components').factory('$socketResource', ['server', function (
                 var promise = server.call(route.url(url), params).then(function (response) {
                     $.active--;
 
-                    var data = response.kwargs,
+                    var data = response.args[0],
                         promise = value.$promise;
 
                     if (data) {
@@ -167,7 +167,7 @@ angular.module('eg.components').factory('$socketResource', ['server', function (
                     response.resource = value;
 
 //                        $rootScope.$apply(function() {
-                    callback && callback(response)
+                    callback && callback(data)
 //                        });
 
                     return response;

@@ -15,8 +15,9 @@ angular.module('eg.goal').factory('User', ['$rootScope', '$socketResource', '$re
 //    );
 
     var userModel = new User;
-    userModel.$get([1]);
-
+    userModel.$get([1], function(result) {
+      console.log(result)
+    });
 
     var service = {
         instantiate: function (raw) {

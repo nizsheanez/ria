@@ -2,9 +2,6 @@ package models
 
 import (
 	"github.com/astaxie/beego/orm"
-	"github.com/astaxie/beego"
-	"strconv"
-	"fmt"
 	"errors"
 )
 
@@ -33,7 +30,7 @@ type User struct {
 	Status               int8           `json:"status"`
 	CreateTime           string         `json:"create_time"`
 	UpdateTime           string         `json:"update_time"`
-	Goals				[]*Goal 		`orm:"reverse(many)"`
+	Goals                []*Goal        `orm:"reverse(many)"`
 }
 
 func init() {
@@ -45,18 +42,12 @@ func (this *User) Get(arguments []interface{}) (result map[string]interface{}, e
 	o := orm.NewOrm()
 	o.Using("default")
 
-	beego.Info(fmt.Sprintf("%v",arguments[0]))
-	beego.Info(fmt.Sprintf("%v",arguments))
-	idStr, ok := arguments[0].(string)
+	id, ok := arguments[0].(float64)
 	if !ok {
 		return nil, errors.New("User id is required")
 	}
-	id, err := strconv.Atoi(idStr)
-	if err != nil {
-		return nil, err
-	}
 
-	user := &User{Id: id}
+	user := &User{Id: int(id)}
 	err = o.Read(user)
 
 	o.LoadRelated(user, "Goals")
@@ -66,7 +57,7 @@ func (this *User) Get(arguments []interface{}) (result map[string]interface{}, e
 	}
 
 	result = map[string]interface{}{
-//		"email":user.Email,
+		"email":user.Email,
 	}
 	return result, nil
 }

@@ -1,9 +1,6 @@
 package models
 
-import (
-	"github.com/astaxie/beego/orm"
-	"errors"
-)
+import "github.com/astaxie/beego/orm"
 
 type Goal struct {
 	Id                 int              `orm:"pk;auto;column(id)" json:"id"`
@@ -38,16 +35,11 @@ func init() {
 	orm.RegisterModel(new(User), new(Goal))
 }
 
-func (this *User) Get(arguments []interface{}) (result map[string]interface{}, err error) {
+func (this *User) Get(id int) (result map[string]interface{}, err error) {
 	o := orm.NewOrm()
 	o.Using("default")
 
-	id, ok := arguments[0].(float64)
-	if !ok {
-		return nil, errors.New("User id is required")
-	}
-
-	user := &User{Id: int(id)}
+	user := &User{Id: id}
 	err = o.Read(user)
 
 	o.LoadRelated(user, "Goals")

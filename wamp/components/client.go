@@ -1,4 +1,4 @@
-package wamp
+package components
 
 import (
 	"fmt"
@@ -6,9 +6,8 @@ import (
 	"log"
 	"github.com/gorilla/websocket"
 	"github.com/astaxie/beego"
-	"ria/models"
 	"errors"
-	"ria/components/wamp/messages"
+	"ria/wamp/messages"
 )
 
 const channelBufSize = 100
@@ -46,19 +45,17 @@ func NewClient(ws *websocket.Conn, server *Server) *Client {
 func (this *Client) Call(callId int, uri string, arguments []interface{}) {
 	beego.Info(fmt.Sprintf("Call: %d, %v, %v", callId, uri, arguments))
 
+	//	this.server.Handlers.Get(uri)
 
-	controller := &models.User{}
-	data, err := controller.Get(arguments)
+	//	if err != nil {
+	//		this.server.Err(err)
+	//	}
 
-	if err != nil {
-		this.server.Err(err)
-	}
-
-	msg := &messages.ResultMessage{
-		CallId: callId,
-		Data: data,
-	}
-	this.Write(msg)
+	//	msg := &messages.ResultMessage{
+	//		CallId: callId,
+	//		Data: data,
+	//	}
+	//	this.Write(msg)
 }
 
 func (this *Client) Subscribe() {

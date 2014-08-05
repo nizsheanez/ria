@@ -1,4 +1,4 @@
-package wamp
+package components
 
 import (
 	"github.com/astaxie/beego"
@@ -7,7 +7,7 @@ import (
 	"errors"
 	"fmt"
 	"encoding/json"
-	"ria/components/wamp/messages"
+	"ria/wamp/messages"
 )
 
 type Protocol struct {

@@ -1,9 +1,9 @@
-package wamp
+package components
 
 import (
 	"log"
 	"net/http"
-	"ria/components/wamp/messages"
+	"ria/wamp/messages"
 	"github.com/astaxie/beego"
 )
 

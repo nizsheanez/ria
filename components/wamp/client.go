@@ -1,4 +1,4 @@
-package controllers
+package wamp
 
 import (
 	"fmt"
@@ -7,24 +7,20 @@ import (
 	"github.com/gorilla/websocket"
 	"github.com/astaxie/beego"
 	"ria/models"
-	"ria/components/wamp"
+	"errors"
+	"ria/components/wamp/messages"
 )
 
 const channelBufSize = 100
 
 var maxId int = 0
 
-type Message struct {
-	Id int
-	Data map[string]interface{}
-}
-
 // Chat client.
 type Client struct {
 	id             int
 	ws            *websocket.Conn
 	server        *Server
-	messagesCh     chan *Message
+	messagesCh     chan messages.Message
 	doneCh         chan bool
 }
 
@@ -40,7 +36,7 @@ func NewClient(ws *websocket.Conn, server *Server) *Client {
 	}
 
 	maxId++
-	messgagesCh := make(chan *Message, channelBufSize)
+	messgagesCh := make(chan messages.Message, channelBufSize)
 	doneCh := make(chan bool)
 
 	return &Client{maxId, ws, server, messgagesCh, doneCh}
@@ -50,7 +46,6 @@ func NewClient(ws *websocket.Conn, server *Server) *Client {
 func (this *Client) Call(callId int, uri string, arguments []interface{}) {
 	beego.Info(fmt.Sprintf("Call: %d, %v, %v", callId, uri, arguments))
 
-	//	parts := strings.Split(uri, '/')
 
 	controller := &models.User{}
 	data, err := controller.Get(arguments)
@@ -59,8 +54,8 @@ func (this *Client) Call(callId int, uri string, arguments []interface{}) {
 		this.server.Err(err)
 	}
 
-	msg := &Message{
-		Id: callId,
+	msg := &messages.ResultMessage{
+		CallId: callId,
 		Data: data,
 	}
 	this.Write(msg)
@@ -78,7 +73,7 @@ func (this *Client) Conn() *websocket.Conn {
 	return this.ws
 }
 
-func (this *Client) Write(msg *Message) {
+func (this *Client) Write(msg messages.Message) {
 	select {
 	case this.messagesCh <- msg:
 	default:
@@ -103,22 +98,13 @@ func (this *Client) listenWrite() {
 	for {
 		// send message to the client
 		select {
-		case msg := <-this.messagesCh:
-			log.Println("Send:", msg)
+		case rawMsg := <-this.messagesCh:
+			message, ok := rawMsg.(*messages.ResultMessage)
+			if !ok {
+				this.server.Err(errors.New(fmt.Sprintf("Can't case %T to RpcMessage", rawMsg)))
+			}
 
-			options := map[string]interface{}{
-				"progress": false,
-			}
-			str := []interface{}{
-				wamp.MSG_RESULT,
-				msg.Id,
-				options,
-				[]interface{}{ //rpc allow return multiple arguments, we don't use it
-					msg.Data,
-				},
-				map[string]interface{}{},
-			}
-			err := websocket.WriteJSON(this.ws, str)
+			err := websocket.WriteJSON(this.ws, message.Array())
 			if err != nil {
 				this.server.Err(err)
 			}

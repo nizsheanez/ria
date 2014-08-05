@@ -3,7 +3,7 @@ package main
 import (
 	_ "ria/routers"
 	"github.com/astaxie/beego"
-	"ria/controllers"
+	"ria/components/wamp"
 	"net/http"
 	"github.com/astaxie/beego/orm"
 	_ "github.com/go-sql-driver/mysql"
@@ -14,7 +14,7 @@ func main() {
 	orm.RegisterDataBase("default", "mysql", "root:asharov@/blog3?charset=utf8")
 
 	//websocket server
-	wampServer := controllers.NewServer()
+	wampServer := wamp.NewServer()
 	go wampServer.ListenAndServe()
 
 	//run upgrade server, for upgrade http to ws
@@ -27,6 +27,7 @@ func main() {
 
 	beego.BeeLogger.Info("Running Upgrade server on %s", addr)
 	go upgradeServer.ListenAndServe()
+
 
 	//run usual web app
 	beego.Run()

@@ -1,38 +1,35 @@
-package controllers
+package wamp
 
 import (
 	"log"
 	"net/http"
-	"ria/components/wamp"
+	"ria/components/wamp/messages"
 	"github.com/astaxie/beego"
 )
 
 // Chat server.
 type Server struct {
-	protocol  *wamp.Protocol
-	messages  []*Message
+	protocol  *Protocol
 	clients   map[int]*Client
 	addCh     chan *Client
 	delCh     chan *Client
-	sendAllCh chan *Message
+	sendAllCh chan messages.Message
 	doneCh    chan bool
 	errCh     chan error
 }
 
 // Create new chat server.
 func NewServer() *Server {
-	messages := []*Message{}
 	clients := make(map[int]*Client)
 	addCh := make(chan *Client)
 	delCh := make(chan *Client)
-	sendAllCh := make(chan *Message)
+	sendAllCh := make(chan messages.Message)
 	doneCh := make(chan bool)
 	errCh := make(chan error)
-	protocol := &wamp.Protocol{}
+	protocol := &Protocol{}
 
 	server := &Server{
 		protocol,
-		messages,
 		clients,
 		addCh,
 		delCh,
@@ -52,7 +49,7 @@ func (s *Server) Del(c *Client) {
 	s.delCh <- c
 }
 
-func (s *Server) SendAll(msg *Message) {
+func (s *Server) SendAll(msg messages.Message) {
 	s.sendAllCh <- msg
 }
 
@@ -64,13 +61,7 @@ func (s *Server) Err(err error) {
 	s.errCh <- err
 }
 
-func (s *Server) sendPastMessages(c *Client) {
-	for _, msg := range s.messages {
-		c.Write(msg)
-	}
-}
-
-func (s *Server) sendAll(msg *Message) {
+func (s *Server) sendAll(msg messages.Message) {
 	for _, c := range s.clients {
 		c.Write(msg)
 	}
@@ -104,18 +95,11 @@ func (this *Server) ListenAndServe() {
 		// Add new a client
 		case c := <-this.addCh:
 			this.clients[c.id] = c
-			this.sendPastMessages(c)
 
 			// del a client
 		case c := <-this.delCh:
 			log.Println("Delete client")
 			delete(this.clients, c.id)
-
-			// broadcast message for all clients
-		case msg := <-this.sendAllCh:
-			log.Println("Send all:", msg)
-			this.messages = append(this.messages, msg)
-			this.sendAll(msg)
 
 		case err := <-this.errCh:
 			beego.Error(err)

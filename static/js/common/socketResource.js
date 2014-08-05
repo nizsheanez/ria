@@ -123,7 +123,7 @@ angular.module('eg.components').factory('$socketResource', ['server', function (
         forEach(actions, function (action, name) {
 
             var value = action.isArray ? [] : new Resource();
-            Resource[name] = function (url, params, callback) {
+            Resource[name] = function (params, callback) {
                 if (!action.isArray) {
                     params = params ? params : [];
                     if (typeof params !== 'object') {
@@ -135,11 +135,10 @@ angular.module('eg.components').factory('$socketResource', ['server', function (
                 }
 
                 $.active++;
-
-                var promise = server.call(route.url(url), params).then(function (response) {
+                var promise = server.call(route.url(action.url), params).then(function (response) {
                     $.active--;
 
-                    var data = response.args[0],
+                    var data = response,
                         promise = value.$promise;
 
                     if (data) {

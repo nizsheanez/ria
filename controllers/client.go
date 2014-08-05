@@ -16,16 +16,16 @@ var maxId int = 0
 
 type Message struct {
 	Id int
-	Data map[string]interface {}
+	Data map[string]interface{}
 }
 
 // Chat client.
 type Client struct {
-	id     int
-	ws     *websocket.Conn
-	server *Server
-	ch     chan *Message
-	doneCh chan bool
+	id             int
+	ws            *websocket.Conn
+	server        *Server
+	messagesCh     chan *Message
+	doneCh         chan bool
 }
 
 // Create new chat client.
@@ -40,17 +40,17 @@ func NewClient(ws *websocket.Conn, server *Server) *Client {
 	}
 
 	maxId++
-	ch := make(chan *Message, channelBufSize)
+	messgagesCh := make(chan *Message, channelBufSize)
 	doneCh := make(chan bool)
 
-	return &Client{maxId, ws, server, ch, doneCh}
+	return &Client{maxId, ws, server, messgagesCh, doneCh}
 }
 
 //WampContext interface
 func (this *Client) Call(callId int, uri string, arguments []interface{}) {
 	beego.Info(fmt.Sprintf("Call: %d, %v, %v", callId, uri, arguments))
 
-//	parts := strings.Split(uri, '/')
+	//	parts := strings.Split(uri, '/')
 
 	controller := &models.User{}
 	data, err := controller.Get(arguments)
@@ -80,7 +80,7 @@ func (this *Client) Conn() *websocket.Conn {
 
 func (this *Client) Write(msg *Message) {
 	select {
-	case this.ch <- msg:
+	case this.messagesCh <- msg:
 	default:
 		this.server.Del(this)
 		err := fmt.Errorf("client %d is disconnected.", this.id)
@@ -103,21 +103,20 @@ func (this *Client) listenWrite() {
 	for {
 		// send message to the client
 		select {
-		case msg := <-this.ch:
+		case msg := <-this.messagesCh:
 			log.Println("Send:", msg)
 
-			options := map[string]interface {}{
+			options := map[string]interface{}{
 				"progress": false,
 			}
-			b := []interface {}{
-				msg.Data,
-			}
-			str := []interface {}{
+			str := []interface{}{
 				wamp.MSG_RESULT,
 				msg.Id,
 				options,
-				b,
-				msg.Data,
+				[]interface{}{ //rpc allow return multiple arguments, we don't use it
+					msg.Data,
+				},
+				map[string]interface{}{},
 			}
 			err := websocket.WriteJSON(this.ws, str)
 			if err != nil {
@@ -157,7 +156,7 @@ func (this *Client) listenRead() {
 			// read data from websocket connection
 		default:
 			err := this.server.protocol.ReadMessage(this.ws, this)
-		    if err != nil {
+			if err != nil {
 				if err == io.EOF {
 					this.Done()
 

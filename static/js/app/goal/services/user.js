@@ -14,10 +14,11 @@ angular.module('eg.goal').factory('User', ['$rootScope', '$socketResource', '$re
 //        }
 //    );
 
-    var userModel = new User;
-    userModel.$get([1], function(result) {
-      console.log(result)
+    var user = User.get([1], function() {
+        console.log(user)
     });
+
+
 
     var service = {
         instantiate: function (raw) {

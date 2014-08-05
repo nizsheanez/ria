@@ -42,7 +42,7 @@ func NewClient(ws *websocket.Conn, server *Server) *Client {
 }
 
 //WampContext interface
-func (this *Client) Call(callId int, uri string, arguments []interface{}) {
+func (this *Client) Call(callId int, uri string, arguments map[string]interface{}) {
 	beego.Info(fmt.Sprintf("Call: %d, %v, %v", callId, uri, arguments))
 
 	//	this.server.Handlers.Get(uri)

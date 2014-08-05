@@ -14,7 +14,7 @@ type Protocol struct {
 }
 
 type WampContext interface {
-	Call(callId int, procUri string, arguments []interface{})
+	Call(callId int, procUri string, arguments map[string]interface{})
 	Welcome() error
 	Subscribe()
 	Unsubscribe()

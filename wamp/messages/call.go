@@ -9,7 +9,7 @@ type CallMessage struct {
 	CallId    int
 	Uri       string
 	Options map[string]interface{}
-	Arguments []interface{}
+	Arguments map[string]interface{}
 }
 
 func (this *CallMessage) Array() interface{} {
@@ -18,7 +18,9 @@ func (this *CallMessage) Array() interface{} {
 		this.CallId,
 		this.Uri,
 		this.Options,
-		this.Arguments,
+		[]interface{}{
+			this.Arguments,
+		},
 	}
 	return arr
 }
@@ -31,7 +33,9 @@ func (this *CallMessage) Unmarshal(str []byte) (err error) {
 		&this.CallId,
 		&this.Options,
 		&this.Uri,
-		&this.Arguments,
+		&[]interface {}{ //there is spike for beautiful key-value interface
+			this.Arguments,
+		},
 	}
 	err = json.Unmarshal(str, &message)
 	if err != nil {

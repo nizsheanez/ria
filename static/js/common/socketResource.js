@@ -125,7 +125,12 @@ angular.module('eg.components').factory('$socketResource', ['server', function (
             var value = action.isArray ? [] : new Resource();
             Resource[name] = function (params, callback) {
                 if (!action.isArray) {
-                    params = params ? params : [];
+                    params = params ? params : {};
+
+                    //spike for good key-val interface,
+                    //i don't like ordered no-named parameters, and multiple return values
+                    params = [params]
+
                     if (typeof params !== 'object') {
                         alert('params Must be object!');
                     }

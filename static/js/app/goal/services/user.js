@@ -14,7 +14,7 @@ angular.module('eg.goal').factory('User', ['$rootScope', '$socketResource', '$re
 //        }
 //    );
 
-    var user = User.get([1], function() {
+    var user = User.get({id:1}, function() {
         console.log(user)
     });
 

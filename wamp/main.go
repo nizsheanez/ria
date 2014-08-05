@@ -18,8 +18,6 @@ func main() {
 		Handler: wampServer,
 	}
 
-
 	beego.BeeLogger.Info("Running Upgrade server on %s", addr)
 	upgradeServer.ListenAndServe()
 }
-

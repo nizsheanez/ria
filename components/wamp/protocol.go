@@ -10,15 +10,6 @@ import (
 	"ria/components/wamp/messages"
 )
 
-
-//[1,"realm1",{
-//	"roles":{
-//		"caller":{"features":{"caller_identification":true,"progressive_call_results":true}},
-//		"callee":{"features":{"progressive_call_results":true}},
-//		"publisher":{"features":{"subscriber_blackwhite_listing":true,"publisher_exclusion":true,"publisher_identification":true}},
-//		"subscriber":{"features":{"publisher_identification":true}}
-//	}
-//}]
 type Protocol struct {
 }
 

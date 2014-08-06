@@ -14,7 +14,7 @@ type Protocol struct {
 }
 
 type WampContext interface {
-	Call(callId int, procUri string, arguments map[string]interface{})
+	Call(callId int, procUri string, arguments map[string]string)
 	Welcome() error
 	Subscribe()
 	Unsubscribe()
@@ -111,12 +111,14 @@ func (this *Protocol) OnMessage(rawMessage []byte, ctx WampContext) (err error) 
 			return err
 		}
 	case messages.MSG_CALL:
+
 		message := &messages.CallMessage{}
 		err := message.Unmarshal(rawMessage)
 		if err != nil {
 			beego.Info(fmt.Sprintf("%s %v %v", rawMessage, err, message))
 			return err
 		}
+		beego.Info(message)
 
 		ctx.Call(message.CallId, message.Uri, message.Arguments)
 	case messages.MSG_SUBSCRIBE:

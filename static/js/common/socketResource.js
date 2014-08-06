@@ -80,7 +80,7 @@ angular.module('eg.components').factory('$socketResource', ['server', function (
 
     var DEFAULT_ACTIONS = {
         'get': {
-            url: 'view'
+            url: 'get'
         },
         'save': {
             url: 'save'
@@ -111,6 +111,10 @@ angular.module('eg.components').factory('$socketResource', ['server', function (
         }
     };
 
+    function isNumber(n) {
+        return !isNaN(parseFloat(n)) && isFinite(n);
+    }
+
     function resourceFactory(url, paramDefaults, actions) {
         var route = new Route(url);
 
@@ -127,13 +131,19 @@ angular.module('eg.components').factory('$socketResource', ['server', function (
                 if (!action.isArray) {
                     params = params ? params : {};
 
+                    angular.forEach(params, function (value, key) {
+                        if (isNumber(value)) {
+                            params[key] = ""+value;
+                        }
+                    });
+
                     //spike for good key-val interface,
                     //i don't like ordered no-named parameters, and multiple return values
                     params = [params]
 
-                    if (typeof params !== 'object') {
-                        alert('params Must be object!');
-                    }
+//                    if (typeof params !== 'object') {
+//                        alert('params Must be object!');
+//                    }
                     angular.forEach(this, function (value, key) {
                         params[key] = angular.copy(value);
                     });

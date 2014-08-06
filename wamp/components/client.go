@@ -7,6 +7,10 @@ import (
 	"github.com/gorilla/websocket"
 	"github.com/astaxie/beego"
 	"errors"
+	"net/http"
+	"net/http/httptest"
+	"io/ioutil"
+	"net/url"
 	"ria/wamp/messages"
 )
 
@@ -42,9 +46,31 @@ func NewClient(ws *websocket.Conn, server *Server) *Client {
 }
 
 //WampContext interface
-func (this *Client) Call(callId int, uri string, arguments map[string]interface{}) {
+func (this *Client) Call(callId int, uri string, arguments map[string]string) {
 	beego.Info(fmt.Sprintf("Call: %d, %v, %v", callId, uri, arguments))
+	resp := httptest.NewRecorder()
 
+	param := &url.Values{}
+	for key, val := range arguments {
+		param.Set(key, val)
+	}
+	url := "/"+uri+"?"+param.Encode()
+	req, err := http.NewRequest("GET", url, nil)
+	if err != nil {
+		this.server.Err(err)
+		return
+	}
+	beego.BeeApp.Handlers.ServeHTTP(resp, req)
+	if resp.Code != 200 {
+		this.server.Err(errors.New(fmt.Sprintf("Server return wrong http code: %d", resp.Code)))
+		return
+	}
+	p, err := ioutil.ReadAll(resp.Body)
+	if  err != nil {
+		this.server.Err(err)
+		return
+	}
+	beego.Info(string(p))
 	//	this.server.Handlers.Get(uri)
 
 	//	if err != nil {

@@ -1,15 +1,13 @@
 package messages
 
-import (
-	"encoding/json"
-)
+import "encoding/json"
 
 type CallMessage struct {
 	MessageBase
 	CallId    int
 	Uri       string
 	Options map[string]interface{}
-	Arguments map[string]interface{}
+	Arguments map[string]string //actually it should be map[string]interface{} but i don't know how mutch it to url.Value which require strings
 }
 
 func (this *CallMessage) Array() interface{} {
@@ -34,11 +32,11 @@ func (this *CallMessage) Unmarshal(str []byte) (err error) {
 		&this.Options,
 		&this.Uri,
 		&[]interface {}{ //there is spike for beautiful key-value interface
-			this.Arguments,
+			&this.Arguments,
 		},
 	}
 	err = json.Unmarshal(str, &message)
-	if err != nil {
+		if err != nil {
 		return err
 	}
 	if messageType != MSG_CALL {

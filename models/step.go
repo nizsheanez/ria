@@ -8,7 +8,7 @@ type Step struct {
 	Status                  int8           `json:"report_date"`
 	CreateTime              string         `json:"create_time"`
 	UpdateTime              string         `json:"update_time"`
-	Goal                    *Goal           `orm:"rel(one);column(fk_goal)"`
+	Goal                    *Goal          `orm:"rel(one);column(fk_goal)"`
 }
 
 func init() {

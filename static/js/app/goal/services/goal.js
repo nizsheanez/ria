@@ -7,8 +7,8 @@ angular.module('eg.goal').factory('Goal', ['$socketResource', 'Report', function
     var service = {
         instantiate: function(raw) {
             var goal = new Goal(raw);
-            goal['today'].report = Report.instantiate(raw['today'].report);
-            goal['yesterday'].report = Report.instantiate(raw['yesterday'].report);
+            goal['today'].report = Report.instantiate(raw["report"]['today'].report);
+            goal['yesterday'].report = Report.instantiate(raw["report"]['yesterday'].report);
             return goal;
         },
         set: function(goalsArray) {

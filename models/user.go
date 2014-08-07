@@ -2,22 +2,8 @@ package models
 
 import "github.com/astaxie/beego/orm"
 
-type Goal struct {
-	Id                 int              `orm:"pk;auto;column(id)" json:"id"`
-	Title              string           `json:"title"`
-	Status             int              `json:"status"`
-	Completed          int              `json:"password_hash"`
-	Reason             string           `json:"reason"`
-	CreateTime         string           `json:"create_time"`
-	UpdateTime         string           `json:"update_time"`
-	Decomposition      string           `json:"decomposition"`
-	Comments           string           `json:"comments"`
-	FkGoalCategory     int              `json:"fk_goal_category"`
-	User               *User            `orm:"rel(fk);column(fk_user)"`
-}
-
 type User struct {
-	Id                   int            `orm:"pk" db:"id" json:"id"`
+	Id                   int            `orm:"pk;auto;column(id)" json:"id"`
 	UserName             string         `orm:"column(username)" db:"username" json:"username"`
 	AuthKey              string         `json:"auth_key"`
 	PasswordHash         string         `json:"password_hash"`
@@ -32,7 +18,7 @@ type User struct {
 
 func init() {
 	// Need to register model in init
-	orm.RegisterModel(new(User), new(Goal))
+	orm.RegisterModel(new(User))
 }
 
 func (this *User) Get(id int) (result map[string]interface{}, err error) {

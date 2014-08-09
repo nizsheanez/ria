@@ -7,7 +7,7 @@ type GoalCategory struct {
 	Name               string           `json:"name"`
 	CreateTime         string           `json:"create_time"`
 	UpdateTime         string           `json:"update_time"`
-	Goals              []*Goal          `orm:"reverse(many)"`
+	Goals              []*Goal          `orm:"reverse(many)" json:"-"`
 }
 
 func init() {

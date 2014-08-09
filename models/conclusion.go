@@ -8,7 +8,7 @@ type Conclusion struct {
 	ReportDate              string         `json:"report_date"`
 	CreateTime              string         `json:"create_time"`
 	UpdateTime              string         `json:"update_time"`
-	User                 	*User          `orm:"rel(one);column(fk_user)"`
+	User                 	*User          `orm:"rel(one);column(fk_user)" json:"-"`
 }
 
 func init() {

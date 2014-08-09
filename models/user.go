@@ -3,6 +3,9 @@ package models
 import (
 	"time"
 	"github.com/astaxie/beego/orm"
+	"github.com/astaxie/beego"
+	"strconv"
+	"fmt"
 )
 
 type User struct {
@@ -16,8 +19,8 @@ type User struct {
 	Status               int8                      `json:"status"`
 	CreateTime           string                    `json:"create_time"`
 	UpdateTime           string                    `json:"update_time"`
-	Goals                []*Goal                   `orm:"reverse(many)"`
-	Conclusions          map[string]*Conclusion    `orm:"-"`
+	Goals                []*Goal                   `orm:"reverse(many)" json:"-"`
+	Conclusions          map[string]*Conclusion    `orm:"-" json:"-"`
 }
 
 func init() {
@@ -60,12 +63,33 @@ func (this *User) GetInitialData() (result map[string]interface{}, err error) {
 	o := orm.NewOrm()
 	o.Using("default")
 
-	o.LoadRelated(this, "Goals")
+	type ResponseGoal struct {
+		Goal
+		Today              *Day                    `json:"today"`
+		Yesterday          *Day                    `json:"yesterday"`
+	}
+
+	type Response struct {
+		Categories  map[string]*GoalCategory `json:"categories"`
+		Goals       []*ResponseGoal `json:"goals"`
+		Conclusions map[string]*Conclusion `json:"conclusions"`
+	}
+
+	response := &Response{}
+
+	var rawGoals []*Goal
+	qs := o.QueryTable("goal")
+	qs.Filter("fk_user", this.Id)
+	qs.All(&rawGoals)
 
 	days := []string{"today", "yesterday"}
 
-	for _, goal := range this.Goals {
-		goal.Today = &Day{}
+	response.Goals = make([]*ResponseGoal, len(rawGoals))
+	for i, goal := range rawGoals {
+		response.Goals[i] = &ResponseGoal{Goal: *goal}
+
+		response.Goals[i].Today = &Day{Report: &Report{}}
+		response.Goals[i].Yesterday = &Day{Report: &Report{}}
 		for _, day := range days {
 			var day1 time.Time
 			if day == "today" {
@@ -76,22 +100,31 @@ func (this *User) GetInitialData() (result map[string]interface{}, err error) {
 			day2 := day1.AddDate(0, 0, +1)
 
 			qs := o.QueryTable("report")
-			qs = qs.Filter("report_date__gte", day1.Format("2014-07-08"))
-			qs = qs.Filter("report_date__lt", day2.Format("2014-07-08"))
+			qs = qs.Filter("report_date__gte", FormatDate(day1))
+			qs = qs.Filter("report_date__lt", FormatDate(day2))
+			qs = qs.Filter("fk_goal", response.Goals[i].Id)
 
 			if day == "today" {
-				qs.All(&goal.Today.Reports)
+				var r Report
+				qs.One(&r)
+				response.Goals[i].Today.Report = &r
+				beego.Info(fmt.Sprintf("%v - %v", response.Goals[i].Yesterday.Report, r))
+				panic(1)
 			} else {
-				qs.All(&goal.Yesterday.Reports)
+				var r Report
+				qs.One(response.Goals[i].Yesterday.Report)
+				response.Goals[i].Yesterday.Report = &r
+				beego.Info(fmt.Sprintf("%v - %v", response.Goals[i].Yesterday.Report, r))
+				panic(1)
 			}
 			//TODO: create if not found
 		}
 	}
 
-	this.Conclusions = make(map[string]*Conclusion, len(days))
+	response.Conclusions = make(map[string]*Conclusion, len(days))
 
 	for _, day := range days {
-		this.Conclusions[day] = &Conclusion{}
+		response.Conclusions[day] = &Conclusion{}
 
 		var day1 time.Time
 		if day == "today" {
@@ -102,9 +135,9 @@ func (this *User) GetInitialData() (result map[string]interface{}, err error) {
 		day2 := day1.AddDate(0, 0, +1)
 
 		qs := o.QueryTable("conclusion")
-		qs = qs.Filter("report_date__gte", day1.Format("2014-07-08"))
-		qs = qs.Filter("report_date__lt", day2.Format("2014-07-08"))
-		qs.All(this.Conclusions[day])
+		qs = qs.Filter("report_date__gte", FormatDate(day1))
+		qs = qs.Filter("report_date__lt", FormatDate(day2))
+		qs.All(response.Conclusions[day])
 
 		//TODO: create if not found
 	}
@@ -112,17 +145,20 @@ func (this *User) GetInitialData() (result map[string]interface{}, err error) {
 	var cats []*GoalCategory
 	o.QueryTable("goal_category").All(&cats)
 
-	catsReturn := make(map[string]*GoalCategory, len(cats))
+	response.Categories = make(map[string]*GoalCategory, len(cats))
 	for _, cat := range cats {
-		catsReturn[string(cat.Id)] = cat
+		response.Categories[strconv.Itoa(cat.Id)] = cat
 	}
 
 	result = map[string]interface{}{
-		"categories": catsReturn,
-		"goals": this.Goals,
-		"conclusions": this.Conclusions,
+		"categories": response.Categories,
+		"goals": response.Goals,
+		"conclusions": response.Conclusions,
 	}
 
 	return result, nil
 }
 
+func FormatDate(t time.Time) string {
+	return fmt.Sprintf("%04d-%02d-%02d", t.Year(), t.Month(), t.Day())
+}

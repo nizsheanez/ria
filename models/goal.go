@@ -1,20 +1,17 @@
 package models
 
-import "github.com/astaxie/beego/orm"
-
 type Goal struct {
-	Id                 int                      `orm:"pk;auto;column(id)" json:"id"`
-	Title              string                  `json:"title"`
-	Status             int                      `json:"status"`
-	Completed          int                      `json:"password_hash"`
-	Reason             string              		`json:"reason"`
-	CreateTime         string                  `json:"create_time"`
-	UpdateTime         string                  `json:"update_time"`
-	Decomposition      string                  `json:"decomposition"`
-	Comments           string              		`json:"comments"`
-	Category           *GoalCategory          `orm:"rel(fk);column(fk_goal_category)" json:"-"`
-	User               *User                  `orm:"rel(fk);column(fk_user)" json:"-"`
-	//	Steps              []*Step                `orm:"reverse(many)"`
+	Id                   int                      `db:"id" json:"id"`
+	FkUser               int                      `db:"fk_user" json:"fk_user"`
+	FkGoalCategory       int                      `db:"fk_goal_category" json:"fk_goal_category"`
+	Title                NullString               `db:"title" json:"title"`
+	Status               int                      `db:"status" json:"status"`
+	Completed            int                      `db:"completed" json:"completed"`
+	Reason               NullString               `db:"reason" json:"reason"`
+	CreateTime           NullString               `db:"create_time" json:"create_time"`
+	UpdateTime           NullString               `db:"update_time" json:"update_time"`
+	Decomposition        NullString               `db:"decomposition" json:"decomposition"`
+	Comments             NullString               `db:"comments" json:"comments"`
 }
 
 type Day struct {
@@ -23,6 +20,6 @@ type Day struct {
 
 func init() {
 	// Need to register model in init
-	orm.RegisterModel(new(Goal))
+	//	orm.RegisterModel(new(Goal))
 }
 

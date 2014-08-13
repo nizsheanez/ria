@@ -18,8 +18,6 @@ angular.module('eg.goal').factory('User', ['$rootScope', '$socketResource', '$re
         console.log(user)
     });
 
-
-
     var service = {
         instantiate: function (raw) {
             var user = new User(raw);

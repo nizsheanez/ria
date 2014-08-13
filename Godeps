@@ -1,2 +1,5 @@
+github.com/beego/bee                master
 github.com/astaxie/beego            v1.3.0
 github.com/gorilla/websocket        master
+github.com/lann/squirrel            master
+github.com/jmoiron/sqlx             master

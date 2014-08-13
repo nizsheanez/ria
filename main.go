@@ -4,17 +4,25 @@ import (
 	_ "ria/routers"
 	"github.com/astaxie/beego"
 	"net/http"
-	"ria/wamp/components"
+	components "ria/components"
+	wamp "ria/wamp/components"
 	"github.com/astaxie/beego/orm"
 	_ "github.com/go-sql-driver/mysql"
+	"github.com/jmoiron/sqlx"
 )
 
 func main() {
+	db, err := sqlx.Open("mysql", "root:asharov@/blog3?charset=utf8")
+	if err != nil {
+		panic(err)
+	}
+	components.App.Db = db
+
 	orm.RegisterDriver("mysql", orm.DR_MySQL)
 	orm.RegisterDataBase("default", "mysql", "root:asharov@/blog3?charset=utf8")
 
 	//websocket server
-	wampServer := components.NewServer()
+	wampServer := wamp.NewServer()
 	beego.BeeLogger.Info("Running WS server wait for client requests")
 	go wampServer.ListenAndServe()
 

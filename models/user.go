@@ -226,8 +226,8 @@ func loadValue(qb *squirrel.SelectBuilder, buf interface{}) error {
 
 	err = components.App.Db.Unsafe().QueryRow(query, args...).Scan(buf)
 	if err != nil && err != sql.ErrNoRows {
-		err = err
+		return err
 	}
 
-	return err
+	return nil
 }

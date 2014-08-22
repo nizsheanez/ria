@@ -118,7 +118,7 @@ func (this *Protocol) OnMessage(rawMessage []byte, ctx WampContext) (err error) 
 			beego.Info(fmt.Sprintf("%s %v %v", rawMessage, err, message))
 			return err
 		}
-		beego.Info(message)
+//		beego.Info(message)
 
 		ctx.Call(message.CallId, message.Uri, message.Arguments)
 	case messages.MSG_SUBSCRIBE:

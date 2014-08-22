@@ -3,7 +3,7 @@ package models
 import (
 	"time"
 	"github.com/astaxie/beego/orm"
-//		"github.com/astaxie/beego"
+	//		"github.com/astaxie/beego"
 	"ria/components"
 	"database/sql"
 	"github.com/lann/squirrel"
@@ -20,8 +20,8 @@ type User struct {
 	Email                NullString                `db:"email" json:"email"`
 	Role                 int                       `db:"role" json:"role"`
 	Status               int8                      `db:"status" json:"status"`
-	CreateTime           string                    `db:"create_time" json:"create_time"`
-	UpdateTime           string                    `db:"update_time" json:"update_time"`
+	CreateTime           NullString                    `db:"create_time" json:"create_time"`
+	UpdateTime           NullString                    `db:"update_time" json:"update_time"`
 	//	Goals                []*Goal                   `orm:"reverse(many)" json:"-"`
 	//	Conclusions          map[string]*Conclusion    `orm:"-" json:"-"`
 }

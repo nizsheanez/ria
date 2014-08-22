@@ -4,7 +4,6 @@ import (
 	"github.com/astaxie/beego"
 	"ria/models"
 	"errors"
-	"encoding/json"
 )
 
 type UserController struct {
@@ -26,16 +25,16 @@ func (this *UserController) Get() {
 		beego.Error(err)
 	}
 
-	data, err := user.GetInitialData()
-	if err != nil {
-		beego.Error(err)
-	}
-
-	str, err := json.Marshal(data)
-	if err != nil {
-		beego.Error(err)
-	}
-	beego.Info(string(str))
+//	data, err := user.GetInitialData()
+//	if err != nil {
+//		beego.Error(err)
+//	}
+//
+//	str, err := json.Marshal(data)
+//	if err != nil {
+//		beego.Error(err)
+//	}
+//	beego.Info(string(str))
 
 	result, err := user.Get(int(id))
 	if err != nil {

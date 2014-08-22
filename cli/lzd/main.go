@@ -10,6 +10,7 @@ import (
 func main() {
 	nCPU := runtime.NumCPU()
 	runtime.GOMAXPROCS(nCPU)
+
 	app := cli.NewApp()
 	app.Name = "lzd"
 	app.Usage = "Distributed lazada log watcher!"

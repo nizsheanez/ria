@@ -35,7 +35,8 @@ angular.module('eg.goal').config(['$routeProvider', '$locationProvider', functio
         .when('/', {templateUrl: dir + '/goals.html', controller: 'GoalCtrl'})
         .when('/yesterday', {templateUrl: dir + '/goals.html', controller: 'GoalCtrl'})
         .when('/active', {templateUrl: dir + '/goals.html', controller: 'GoalCtrl'})
-        .when('/goal/:id', {templateUrl: dir + '/goals.html', controller: 'GoalCtrl'});
+        .when('/goal/:id', {templateUrl: dir + '/goals.html', controller: 'GoalCtrl'})
+        .when('/news/', {templateUrl: dir + '/news.html', controller: 'NewsCtrl'});
 
     $locationProvider
         .html5Mode(true)
@@ -67,13 +68,14 @@ angular.module('eg.goal').run(function ($rootScope, $templateCache, $compile) {
                         range.pasteHTML(html);
                     }
                 }
+
                 function placeCaretAtEnd(el) {
                     el.focus();
                     if (typeof window.getSelection != "undefined"
                         && typeof document.createRange != "undefined") {
                         var range = document.createRange();
-                        range.setStartAfter( el );
-                        range.setEndAfter( el );
+                        range.setStartAfter(el);
+                        range.setEndAfter(el);
                         var sel = window.getSelection();
                         sel.removeAllRanges();
                         sel.addRange(range);
@@ -84,9 +86,6 @@ angular.module('eg.goal').run(function ($rootScope, $templateCache, $compile) {
                         textRange.select();
                     }
                 }
-
-
-
 
 
                 var element = $compile('<input type="checkbox" eg-todo />')(this.$parent);

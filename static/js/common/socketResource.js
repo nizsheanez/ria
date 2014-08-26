@@ -11,7 +11,7 @@ angular.module('eg.components', []).service('server', function () {
             var args = arguments;
             var beforeOnOpenDefer = $.Deferred();
             socketDefer.then(function () {
-                sess.call.apply(sess, args).then(function (data) {
+                sess.call.apply(sess, $.isArray(args) ? args : []).then(function (data) {
                     beforeOnOpenDefer.resolve(data)
                 });
             });
@@ -128,6 +128,8 @@ angular.module('eg.components').factory('$socketResource', ['server', function (
 
             var value = action.isArray ? [] : new Resource();
             Resource[name] = function (params, callback) {
+                console.log(params)
+
                 if (!action.isArray) {
                     params = params ? params : {};
 

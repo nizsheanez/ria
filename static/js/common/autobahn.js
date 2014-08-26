@@ -2615,10 +2615,10 @@ var AUTOBAHNJS_VERSION = '?.?.?';
         }
     };
 
-    ab._debugrpc = false;
-    ab._debugpubsub = false;
+    ab._debugrpc = true;
+    ab._debugpubsub = true;
     ab._debugws = true;
-    ab._debugconnect = false;
+    ab._debugconnect = true;
 
     ab.debug = function (debugWamp, debugWs, debugConnect) {
         if ("console" in window) {

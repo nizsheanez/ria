@@ -1,21 +1,16 @@
 'use strict';
 
-angular.module('eg.goal').factory('User', ['$rootScope', '$socketResource', '$resource', 'Category', 'Goal', 'Conclusion', function ($rootScope, $socketResource, $resource, Category, Goal, Conclusion) {
+angular.module('eg.goal').factory('User', ['$rootScope', '$resource', 'Category', 'Goal', 'Conclusion', function ($rootScope, $resource, Category, Goal, Conclusion) {
 
-    var User = $socketResource('user');
+    var User = $resource('/user', {}, {
+        'query' : {
+            url: "/user/list",
+            isArray: true
+        }
+    });
 
-//    var User = $resource('http://'+document.domain+'/ws/user', null,
-//        {
-//            'get': {method: 'GET'},
-//            'save': {method: 'POST'},
-//            'query': {method: 'GET', isArray: true},
-//            'remove': {method: 'DELETE'},
-//            'delete': {method: 'DELETE'}
-//        }
-//    );
-
-    var user = User.get({id:1}, function() {
-        console.log(user)
+    var user = User.get({id:1}, function(data) {
+        console.log(data)
     });
 
     var service = {
@@ -31,8 +26,8 @@ angular.module('eg.goal').factory('User', ['$rootScope', '$socketResource', '$re
 
             callback(user);
         },
-        getAll: function () {
-            return User;
+        getAll: function (cb) {
+            User.query(cb);
         }
     };
     return service;

@@ -115,6 +115,7 @@ func AppAsset() *components.Asset {
 			"js/app/goal/services/report.js",
 			"js/app/goal/services/goal.js",
 			"js/app/goal/controllers/goal.js",
+			"js/app/goal/controllers/news.js",
 			"js/app/goal/controllers/nav.js",
 			"js/app/goal/directives/editor.js",
 			"js/app/goal/services/alert.js",

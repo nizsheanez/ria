@@ -1,5 +1,7 @@
 ria
 .idea
+
+conf/dev.yaml
 atlassian-ide-plugin.xml
 static/vendor/*
 static/assets/*

@@ -12,7 +12,7 @@ type UserController struct {
 
 func (this *UserController) Get() {
 	var id int
-	this.Ctx.Input.Bind(&id, "id")
+	this.Ctx.Input.Bind(&id, ":id")
 
 	if id <= 0 {
 		this.Data["json"] = errors.New("User id is required")
@@ -44,5 +44,16 @@ func (this *UserController) Get() {
 	}
 	this.Data["json"] = result
 
+	this.ServeJson()
+}
+
+func (this *UserController) List() {
+	users, err := models.FindUsers()
+
+	if err != nil {
+		beego.Error(err)
+		return
+	}
+	this.Data["json"] = users
 	this.ServeJson()
 }

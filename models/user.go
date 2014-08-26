@@ -45,6 +45,18 @@ func FindUser(id int) (user *User, err error) {
 	return user, nil
 }
 
+func FindUsers() ([]User, error) {
+	qb := squirrel.Select("*").From("user")
+
+	var users []User
+	err := loadCollection(&qb, &users)
+	if err != nil {
+		return nil, err
+	}
+
+	return users, nil
+}
+
 func (this *User) Get(id int) (result map[string]interface{}, err error) {
 
 	user := &User{}

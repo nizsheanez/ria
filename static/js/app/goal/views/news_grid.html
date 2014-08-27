@@ -1,0 +1,10 @@
+<div>
+    <div ng-repeat="article in users" class="category-panel sel-cat-{{article.id}}">
+        <div class="category-title-wrapper">
+            <p class="category-title">
+                {{article.email}}
+                <a href="#" ng-click="backLogModal(article)" class="category-backlog-button"><i class="fa fa-tasks"></i></a>
+            </p>
+        </div>
+    </div>
+</div>

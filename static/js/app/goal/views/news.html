@@ -1,4 +1,7 @@
 <div style="height: 760px; margin-top: 15px; overflow: hidden;" class="row">
-    Hello
+    <section class="col-md-7" style="height: inherit; overflow: auto">
+        <ng-include class="news-grid-container" ng-if="users.length" src="tpl.news.grid"/>
+    </section>
+
 </div>
 

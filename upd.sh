@@ -6,6 +6,4 @@ go get -u -v code.google.com/p/go.tools/cmd/vet
 go get -u -v github.com/codegangsta/cli
 go get -u -v code.google.com/p/go.crypto/ssh
 go get -u -v github.com/daviddengcn/go-colortext
-go get -u -v github.com/quekshuy/evernote-golang-sdk
-go get -u -v github.com/nizsheanez/evernote
 go get -u -v gopkg.in/yaml.v1

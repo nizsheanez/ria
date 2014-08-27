@@ -9,11 +9,10 @@ angular.module('eg.goal').factory('User', ['$rootScope', '$resource', 'Category'
         }
     });
 
-    var user = User.get({id:1}, function(data) {
-        console.log(data)
-    });
-
     var service = {
+        getInstance: function() {
+            return new User();
+        },
         instantiate: function (raw) {
             var user = new User(raw);
             Category.set(raw.categories);

@@ -10,7 +10,10 @@ angular.module('eg.goal').factory('Tpl', function () {
         },
         grid: tplBase + 'views/goal_grid.html',
         goals: tplBase + 'views/goals.html',
-        sidebar: tplBase + 'views/sidebar.html'
+        sidebar: tplBase + 'views/sidebar.html',
+        news: {
+            grid: tplBase + 'views/news_grid.html'
+        }
     };
     return service;
 });

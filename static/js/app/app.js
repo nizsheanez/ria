@@ -36,7 +36,8 @@ angular.module('eg.goal').config(['$routeProvider', '$locationProvider', functio
         .when('/yesterday', {templateUrl: dir + '/goals.html', controller: 'GoalCtrl'})
         .when('/active', {templateUrl: dir + '/goals.html', controller: 'GoalCtrl'})
         .when('/goal/:id', {templateUrl: dir + '/goals.html', controller: 'GoalCtrl'})
-        .when('/news/', {templateUrl: dir + '/news.html', controller: 'NewsCtrl'});
+        .when('/news/', {templateUrl: dir + '/news.html', controller: 'NewsCtrl'})
+        .when('/article/create', {templateUrl: dir + '/news/create.html', controller: 'ArticleCreateCtrl'});
 
     $locationProvider
         .html5Mode(true)

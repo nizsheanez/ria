@@ -10,11 +10,14 @@ type BaseModel struct {
 
 }
 
+
 func (this *BaseModel) Validate(scenario string) (b bool, err error) {
 	validator := validation.Validation{}
 
-	if model, ok :=  interface{}(this).(Validatable); ok {
-		model.Validators(&validator, scenario)
+	if this, ok :=  interface{}(this).(Validatable); ok {
+		this.Validators(&validator, scenario)
+	} else {
+		panic("Model don't implement interface Validatable")
 	}
 
 	return validator.Valid(this)
@@ -22,6 +25,28 @@ func (this *BaseModel) Validate(scenario string) (b bool, err error) {
 
 type Validatable interface {
 	Validators(validator *validation.Validation, scenario string)
+}
+
+type TableMapper interface {
+	TableName() string
+	FindById(id int) error
+}
+
+func (this *BaseModel) FindById(id int) error {
+	if this, ok :=  interface{}(this).(TableMapper); ok {
+		qb := squirrel.Select("*").
+			From(this.TableName()).
+			Where("id = ?", id)
+
+		err := LoadOne(&qb, this)
+		if err != nil {
+			return err
+		}
+	} else {
+		panic("Model don't implement interface Validatable")
+	}
+
+	return nil
 }
 
 

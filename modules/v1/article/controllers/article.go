@@ -25,7 +25,8 @@ func (this *ArticleController) Get() {
 		return
 	}
 
-	article, err := models.NewArticle().FindById(id)
+	article := models.NewArticle()
+	err := article.FindById(id)
 	if err != nil {
 		beego.Error(err)
 	}

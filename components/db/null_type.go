@@ -1,4 +1,4 @@
-package models
+package db
 
 // Nullable types are described in this file. They are used to populate SQL models by standard way.
 // Use case:

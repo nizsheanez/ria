@@ -5,7 +5,7 @@ import (
 	"html/template"
 	"ria/conf"
 	"encoding/json"
-	"ria/models"
+	"ria/modules/v1/user/models"
 )
 
 type MainController struct {
@@ -16,9 +16,11 @@ func (this *MainController) Get() {
 	this.Data["Css"] = conf.GetCss()
 	this.Data["Js"] = conf.GetJs()
 
-	user, err := models.FindUser(int(1))
+	user := models.NewUser()
+	err := user.FindById(int(1))
 	if err != nil {
 		beego.Error(err)
+		return
 	}
 
 	data, err := user.GetInitialData()
@@ -26,7 +28,7 @@ func (this *MainController) Get() {
 		beego.Error(err)
 	}
 
-	str, err := json.Marshal(map[string]interface {}{"init":data})
+	str, err := json.Marshal(map[string]interface{}{"init":data})
 	if err != nil {
 		beego.Error(err)
 	}

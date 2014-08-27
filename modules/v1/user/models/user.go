@@ -8,9 +8,11 @@ import (
 	"github.com/lann/squirrel"
 	"strconv"
 	"fmt"
+
 )
 
 type User struct {
+	components.BaseModel
 	Id                   int                   `db:"id" json:"id"`
 	UserName             string                `db:"username" json:"username"`
 	AuthKey              string 			   `db:"auth_key" json:"auth_key"`
@@ -30,18 +32,12 @@ func init() {
 	//	orm.RegisterModel(new(User))
 }
 
-func FindUser(id int) (user *User, err error) {
-	user = &User{}
-	qb := squirrel.Select("*").
-		From("user").
-		Where("id = ?", id)
+func NewUser() *User {
+	return &User{}
+}
 
-	err = components.LoadOne(&qb, user)
-	if err != nil {
-		return nil, err
-	}
-
-	return user, nil
+func (*User) TableName() string {
+	return "user"
 }
 
 func FindUsers() ([]User, error) {

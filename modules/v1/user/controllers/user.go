@@ -2,7 +2,7 @@ package controllers
 
 import (
 	"github.com/astaxie/beego"
-	"ria/models"
+	"ria/modules/v1/user/models"
 	"errors"
 )
 
@@ -20,7 +20,8 @@ func (this *UserController) Get() {
 		return
 	}
 
-	user, err := models.FindUser(id)
+	user := models.NewUser()
+	err := user.FindById(id)
 	if err != nil {
 		beego.Error(err)
 	}

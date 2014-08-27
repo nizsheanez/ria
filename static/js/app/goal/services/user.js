@@ -10,7 +10,7 @@ angular.module('eg.goal').factory('User', ['$rootScope', '$resource', 'Category'
     });
 
     var service = {
-        getInstance: function() {
+        New: function() {
             return new User();
         },
         instantiate: function (raw) {

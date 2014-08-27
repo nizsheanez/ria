@@ -5,7 +5,6 @@ import (
 	"github.com/astaxie/beego/orm"
 	//		"github.com/astaxie/beego"
 	"ria/components"
-	"database/sql"
 	"github.com/lann/squirrel"
 	"strconv"
 	"fmt"
@@ -37,7 +36,7 @@ func FindUser(id int) (user *User, err error) {
 	From("user").
 	Where("id = ?", id)
 
-	err = loadOne(&qb, user)
+	err = components.LoadOne(&qb, user)
 	if err != nil {
 		return nil, err
 	}
@@ -49,7 +48,7 @@ func FindUsers() ([]User, error) {
 	qb := squirrel.Select("*").From("user")
 
 	var users []User
-	err := loadCollection(&qb, &users)
+	err := components.LoadCollection(&qb, &users)
 	if err != nil {
 		return nil, err
 	}
@@ -63,7 +62,7 @@ func (this *User) Get(id int) (result map[string]interface{}, err error) {
 	qb := squirrel.Select("*").
 	From("user").
 	Where("id = ?", id)
-	err = loadOne(&qb, user)
+	err = components.LoadOne(&qb, user)
 	if err != nil {
 		return nil, err
 	}
@@ -97,7 +96,7 @@ func (this *User) GetInitialData() (result map[string]interface{}, err error) {
 	From("goal").
 	Where("fk_user = ?", this.Id)
 
-	err = loadCollection(&qb, &rawGoals)
+	err = components.LoadCollection(&qb, &rawGoals)
 	if err != nil {
 		return nil, err
 	}
@@ -125,13 +124,13 @@ func (this *User) GetInitialData() (result map[string]interface{}, err error) {
 			Where("fk_goal = ?", response.Goals[i].Id)
 
 			if day == "today" {
-				err = loadOne(&qb, response.Goals[i].Today.Report)
+				err = components.LoadOne(&qb, response.Goals[i].Today.Report)
 				if err != nil {
 					return nil, err
 				}
 				//TODO: create if not found
 			} else {
-				err = loadOne(&qb, response.Goals[i].Yesterday.Report)
+				err = components.LoadOne(&qb, response.Goals[i].Yesterday.Report)
 				if err != nil {
 					return nil, err
 				}
@@ -158,7 +157,7 @@ func (this *User) GetInitialData() (result map[string]interface{}, err error) {
 		Where("report_date >= ?", FormatDate(day1)).
 		Where("report_date < ?", FormatDate(day2))
 
-		err = loadOne(&qb, response.Conclusions[day])
+		err = components.LoadOne(&qb, response.Conclusions[day])
 		if err != nil {
 			return nil, err
 		}
@@ -170,7 +169,7 @@ func (this *User) GetInitialData() (result map[string]interface{}, err error) {
 	qb = squirrel.Select("*").
 	From("goal_category")
 
-	err = loadCollection(&qb, &cats)
+	err = components.LoadCollection(&qb, &cats)
 	if err != nil {
 		return nil, err
 	}
@@ -192,54 +191,3 @@ func FormatDate(t time.Time) string {
 	return fmt.Sprintf("%04d-%02d-%02d", t.Year(), t.Month(), t.Day())
 }
 
-// loadCollection uses QueryBuilder to run SELECT query and fetch collection of records from database
-// *search* is used to specify LIMIT and OFFSET for SELECT query
-// *search* can be nil. In this case it won't be used
-func loadCollection(qb *squirrel.SelectBuilder, buf interface{}) error {
-
-	query, args, err := qb.ToSql()
-
-	if err != nil {
-		return err
-	}
-
-	err = components.App.Db.Unsafe().Select(buf, query, args...)
-	if err != nil {
-		return err
-	}
-
-	return nil
-}
-
-func loadOne(qb *squirrel.SelectBuilder, buf interface{}) error {
-
-	query, args, err := qb.ToSql()
-
-	if err != nil {
-		return err
-	}
-
-	err = components.App.Db.Unsafe().Get(buf, query, args...)
-	if err != nil {
-		return err
-	}
-
-	return nil
-}
-
-// loadValue uses QueryBuilder to run SELECT query and fetch single value from database,
-// use it for getting ID or counter
-func loadValue(qb *squirrel.SelectBuilder, buf interface{}) error {
-	query, args, err := qb.ToSql()
-
-	if err != nil {
-		return err
-	}
-
-	err = components.App.Db.Unsafe().QueryRow(query, args...).Scan(buf)
-	if err != nil && err != sql.ErrNoRows {
-		return err
-	}
-
-	return nil
-}

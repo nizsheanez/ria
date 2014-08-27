@@ -28,20 +28,21 @@ angular.module('eg.goal').config(['msdElasticConfig', function (config) {
 }]);
 
 angular.module('eg.goal').config(['$routeProvider', '$locationProvider', function ($routeProvider, $locationProvider) {
-
-    var dir = '/static/js/app/goal/views';
-
-    $routeProvider
-        .when('/', {templateUrl: dir + '/goals.html', controller: 'GoalCtrl'})
-        .when('/yesterday', {templateUrl: dir + '/goals.html', controller: 'GoalCtrl'})
-        .when('/active', {templateUrl: dir + '/goals.html', controller: 'GoalCtrl'})
-        .when('/goal/:id', {templateUrl: dir + '/goals.html', controller: 'GoalCtrl'})
-        .when('/news/', {templateUrl: dir + '/news.html', controller: 'NewsCtrl'})
-        .when('/article/create', {templateUrl: dir + '/news/create.html', controller: 'ArticleCreateCtrl'});
-
     $locationProvider
         .html5Mode(true)
         .hashPrefix('!');
+
+    var appDir = '/static/js/app/';
+    var goalDir = appDir + '/goal/views';
+    var articleDir = appDir + '/article/views';
+
+    $routeProvider
+        .when('/', {templateUrl: goalDir + '/goals.html', controller: 'GoalCtrl'})
+        .when('/yesterday', {templateUrl: goalDir + '/goals.html', controller: 'GoalCtrl'})
+        .when('/active', {templateUrl: goalDir + '/goals.html', controller: 'GoalCtrl'})
+        .when('/goal/:id', {templateUrl: goalDir + '/goals.html', controller: 'GoalCtrl'})
+        .when('/news/', {templateUrl: goalDir + '/news.html', controller: 'NewsCtrl'})
+        .when('/article/create', {templateUrl: articleDir + '/forms/create.html', controller: 'ArticleCreateCtrl'});
 
 //    $urlRouterProvider.otherwise({
 //        redirectTo: '/'

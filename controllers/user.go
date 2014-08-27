@@ -30,6 +30,7 @@ func (this *UserController) Get() {
 	this.ServeJson()
 }
 
+
 func (this *UserController) List() {
 	users, err := models.FindUsers()
 

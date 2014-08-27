@@ -3,11 +3,11 @@
 angular.module('eg.goal').factory('Article', ['$resource', function ($resource) {
 
     var Article = $resource('/article', {}, {
-        'query' : {
+        query : {
             url: "/article/list",
             isArray: true
         }
-    })
+    });
 
     var service = {
         instantiate: function(raw) {

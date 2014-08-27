@@ -1,7 +1,6 @@
 package models
 
 import (
-	"ria/models"
 	"ria/components"
 	"github.com/lann/squirrel"
 	"github.com/astaxie/beego/validation"
@@ -9,11 +8,11 @@ import (
 
 type Article struct {
 	components.BaseModel
-	Id                       int                    `db:"id" json:"id"`
-	Title                    models.NullString      `db:"title" json:"title"`
-	Description              models.NullString      `db:"description" json:"description"`
-	CreateTime               string                 `db:"create_time" json:"create_time"`
-	UpdateTime               string                 `db:"update_time" json:"update_time"`
+	Id                       int                    `db:"id" json:"id" form:"id"`
+	Title                    string				    `db:"title" json:"title" form:"title"`
+	Description              string				    `db:"description" json:"description" form:"description"`
+	CreateTime               string                 `db:"create_time" json:"create_time" form:"create_time"`
+	UpdateTime               string                 `db:"update_time" json:"update_time" form:"update_time"`
 }
 
 func init() {

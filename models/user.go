@@ -11,16 +11,16 @@ import (
 )
 
 type User struct {
-	Id                   int                       `db:"id" json:"id"`
-	UserName             NullString                `db:"username" json:"username"`
-	AuthKey              NullString                `db:"auth_key" json:"auth_key"`
-	PasswordHash         NullString                `db:"password_hash" json:"password_hash"`
-	PasswordResetToken   NullString                `db:"password_reset_token" json:"password_reset_token"`
-	Email                NullString                `db:"email" json:"email"`
-	Role                 int                       `db:"role" json:"role"`
-	Status               int8                      `db:"status" json:"status"`
-	CreateTime           NullString                    `db:"create_time" json:"create_time"`
-	UpdateTime           NullString                    `db:"update_time" json:"update_time"`
+	Id                   int                   `db:"id" json:"id"`
+	UserName             string                `db:"username" json:"username"`
+	AuthKey              string 			   `db:"auth_key" json:"auth_key"`
+	PasswordHash         string                `db:"password_hash" json:"password_hash"`
+	PasswordResetToken   string                `db:"password_reset_token" json:"password_reset_token"`
+	Email                string                `db:"email" json:"email"`
+	Role                 int                   `db:"role" json:"role"`
+	Status               int8                  `db:"status" json:"status"`
+	CreateTime           string                `db:"create_time" json:"create_time"`
+	UpdateTime           string                `db:"update_time" json:"update_time"`
 	//	Goals                []*Goal                   `orm:"reverse(many)" json:"-"`
 	//	Conclusions          map[string]*Conclusion    `orm:"-" json:"-"`
 }
@@ -33,8 +33,8 @@ func init() {
 func FindUser(id int) (user *User, err error) {
 	user = &User{}
 	qb := squirrel.Select("*").
-	From("user").
-	Where("id = ?", id)
+		From("user").
+		Where("id = ?", id)
 
 	err = components.LoadOne(&qb, user)
 	if err != nil {

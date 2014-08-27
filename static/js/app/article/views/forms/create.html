@@ -1,46 +1,38 @@
 <div>
     <form name="articleForm" action="" novalidate ng-submit="submit()" role="form">
         <div class="form-group" eg-smart-errors>
-            <span class="control-label">Email</span>
-            <input name="email" class="form-control" placeholder="Email"
-                   type="email" ng-model="article.email" ng-focus required ng-minlength="3"/>
+            <span class="control-label">Title</span>
+            <input name="title" class="form-control"
+                   type="text" ng-model="article.title" ng-focus required ng-minlength="3"/>
 
             <div class="error-container hidden">
                 <small class="help-block"
-                       ng-show="articleForm.email.$error.required">
+                       ng-show="articleForm.title.$error.required">
                     Your name is required.
                 </small>
                 <small class="help-block"
-                       ng-show="articleForm.email.$error.minlength">
+                       ng-show="articleForm.title.$error.minlength">
                     Your name is required to be at least 3 characters
                 </small>
                 <small class="help-block"
-                       ng-show="articleForm.email.$error.maxlength">
+                       ng-show="articleForm.title.$error.maxlength">
                     Your name cannot be longer than 20 characters
-                </small>
-                <small class="help-block"
-                       ng-show="articleForm.email.$error.email">
-                    That is not a valid email. Please input a valid email.
                 </small>
             </div>
         </div>
 
         <div class="form-group" eg-smart-errors>
-            <p class="control-label">Username</p>
-            <input name="username" class="form-control" type="text"
-                   ng-model="article.username" ng-focus required ng-minlength="3"/>
+            <p class="control-label">Description</p>
+            <textarea name="description" class="form-control"
+                   ng-model="article.description" ng-focus required ng-minlength="3"></textarea>
 
             <div class="error-container hidden">
                 <small class="help-block"
-                       ng-show="articleForm.username.$error.required">
-                    Your name is required.
-                </small>
-                <small class="help-block"
-                       ng-show="articleForm.username.$error.minlength">
+                       ng-show="articleForm.description.$error.minlength">
                     Your name is required to be at least 3 characters
                 </small>
                 <small class="help-block"
-                       ng-show="articleForm.username.$error.maxlength">
+                       ng-show="articleForm.description.$error.maxlength">
                     Your name cannot be longer than 20 characters
                 </small>
             </div>

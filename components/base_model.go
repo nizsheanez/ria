@@ -25,8 +25,6 @@ type Validatable interface {
 }
 
 
-
-
 // loadCollection uses QueryBuilder to run SELECT query and fetch collection of records from database
 // *search* is used to specify LIMIT and OFFSET for SELECT query
 // *search* can be nil. In this case it won't be used

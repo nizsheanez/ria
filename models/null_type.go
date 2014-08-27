@@ -18,9 +18,7 @@ import (
 )
 
 // NullString represent "nullable string" value
-type NullString struct {
-	sql.NullString
-}
+type NullString sql.NullString
 
 // MarshalJSON serializes "nullable string" into json string
 func (n NullString) MarshalJSON() ([]byte, error) {

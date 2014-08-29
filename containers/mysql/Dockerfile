@@ -14,11 +14,11 @@ ADD ./configs /opt/configs/
 # Add MySQL configuration
 # Add MySQL scripts
 RUN \
-        /opt/configs/cnf/my.cnf /etc/mysql/conf.d/my.cnf && \
-        /opt/configs/cnf/mysqld_charset.cnf /etc/mysql/conf.d/mysqld_charset.cnf && \
-        /opt/configs/scripts/create_mysql_admin_user.sh /create_mysql_admin_user.sh && \
-        /opt/configs/scripts/import_sql.sh /import_sql.sh && \
-        /opt/configs/scripts/run.sh /run.sh && \
+        mv /opt/configs/cnf/my.cnf /etc/mysql/conf.d/my.cnf && \
+        mv /opt/configs/cnf/mysqld_charset.cnf /etc/mysql/conf.d/mysqld_charset.cnf && \
+        mv /opt/configs/scripts/create_mysql_admin_user.sh /create_mysql_admin_user.sh && \
+        mv /opt/configs/scripts/import_sql.sh /import_sql.sh && \
+        mv /opt/configs/scripts/run.sh /run.sh && \
         rm -rf /opt/configs && \
         chmod 755 /*.sh
 

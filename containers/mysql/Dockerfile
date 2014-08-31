@@ -1,13 +1,9 @@
 FROM nizsheanez/ubuntu
 MAINTAINER Alex Sharov <www.pismeco@gmail.com>
 
-# Install packages
-ENV DEBIAN_FRONTEND noninteractive
-RUN \
-        apt-get update && \
-        apt-get -y install mysql-server-5.6 pwgen && \
-        apt-get clean && apt-get autoremove && \
-        rm -rf /var/lib/apt/lists/*
+RUN apt-get update
+
+RUN apt-get -y install mysql-server-5.6 pwgen
 
 ADD ./configs /opt/configs/
 
@@ -22,7 +18,7 @@ RUN \
         mv /opt/configs/scripts/run.sh /run.sh && \
         rm -rf /opt/configs && \
         chmod 755 /*.sh && \
-        rm -rf /var/lib/mysql/*
+        rm -rf /var/lib/mysql/* /etc/mysql/*
 
 # Exposed ENV
 ENV MYSQL_USER root

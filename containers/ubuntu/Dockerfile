@@ -6,9 +6,9 @@ ENV HOME /root
 
 ADD ./configs /opt/configs/
 
+Run apt-get update
+Run apt-get install -y nano openssh-server zsh
 Run \
-        apt-get update && \
-        apt-get install -y nano openssh-server zsh && \
         apt-get clean && \
         rm -rf /var/lib/apt/lists/*
 
@@ -19,7 +19,8 @@ RUN \
 
 RUN \
         cp /opt/configs/zsh/.zshrc /root/.zshrc && \
-        cp /opt/configs/sshd/sshd_config /etc/ssh/sshd_config
+        cp /opt/configs/sshd/sshd_config /etc/ssh/sshd_config && \
+        rm -rf /opt/configs/
 
 
 ENTRYPOINT ["/bin/zsh"]

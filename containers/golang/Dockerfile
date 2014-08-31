@@ -2,9 +2,7 @@ FROM nizsheanez/ubuntu
 MAINTAINER Alex Sharov <www.pismeco@gmail.com>
 
 RUN \
-    apt-get install --no-install-recommends -y ca-certificates bzr
-
-RUN \
+    apt-get update && \
     apt-get -y install golang && \
     apt-get clean
 

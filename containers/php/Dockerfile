@@ -1,16 +1,15 @@
-FROM dockerfile/ubuntu
+FROM nizsheanez/ubuntu
 MAINTAINER Alex Sharov <www.pismeco@gmail.com>
 
-ENV DEBIAN_FRONTEND noninteractive
-ENV HOME /root
+# Basic soft
+RUN  \
+        apt-get update && \
+        apt-get install -y php5 php5-fpm php5-dev && \
+        apt-get install -y php5-xcache php5-gd php5-imagick php5-mysqlnd && \
+        apt-get install -y php5-xdebug php5-curl php5-mcrypt && \
+        apt-get clean -y && apt-get autoremove -y
 
 ADD ./configs /opt/configs/
-
-Run \
-        apt-get update && \
-        apt-get install -y nano openssh-server zsh && \
-        apt-get clean && \
-        rm -rf /var/lib/apt/lists/*
 
 # ZSH
 RUN \

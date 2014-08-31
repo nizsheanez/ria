@@ -13,6 +13,7 @@ ADD ./configs /opt/configs/
 
 # Add MySQL configuration
 # Add MySQL scripts
+# We do rm /var/lib/mysql* after mysql installation, because will use data from Volume
 RUN \
         mv /opt/configs/cnf/my.cnf /etc/mysql/conf.d/my.cnf && \
         mv /opt/configs/cnf/mysqld_charset.cnf /etc/mysql/conf.d/mysqld_charset.cnf && \
@@ -20,7 +21,8 @@ RUN \
         mv /opt/configs/scripts/import_sql.sh /import_sql.sh && \
         mv /opt/configs/scripts/run.sh /run.sh && \
         rm -rf /opt/configs && \
-        chmod 755 /*.sh
+        chmod 755 /*.sh && \
+        rm -rf /var/lib/mysql/*
 
 # Exposed ENV
 ENV MYSQL_USER root

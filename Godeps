@@ -6,3 +6,5 @@ github.com/jmoiron/sqlx             master
 code.google.com/p/go.tools/cmd/vet  master
 github.com/codegangsta/cli          v1.2.0
 code.google.com/p/go.crypto/ssh     trunk
+github.com/daviddengcn/go-colortext master
+gopkg.in/yaml.v1                    master

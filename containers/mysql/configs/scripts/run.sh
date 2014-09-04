@@ -1,5 +1,7 @@
 #!/bin/bash
 
+echo 222222
+
 VOLUME_HOME="/var/lib/mysql"
 
 if [[ ! -d $VOLUME_HOME/mysql ]]; then
@@ -7,8 +9,9 @@ if [[ ! -d $VOLUME_HOME/mysql ]]; then
     echo "=> Installing MySQL ..."
     if [ ! -f /usr/share/mysql/my-default.cnf ] ; then
         cp /etc/mysql/my.cnf /usr/share/mysql/my-default.cnf
+        cat /usr/share/mysql/my-default.cnf
     fi
-    mysql_install_db > /dev/null 2>&1
+    mysql_install_db 2>&1
     echo "=> Done!"
     /create_mysql_admin_user.sh
 else

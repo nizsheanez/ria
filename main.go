@@ -36,9 +36,6 @@ func main() {
 	beego.BeeLogger.Info("Running Upgrade server on %s", addr)
 	go upgradeServer.ListenAndServe()
 
-
-
 	//run usual web app
 	beego.Run()
 }
-

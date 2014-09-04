@@ -8,9 +8,6 @@ ADD ./configs /opt/configs/
 
 Run apt-get update
 Run apt-get install -y nano zsh
-Run \
-        apt-get clean && \
-        rm -rf /var/lib/apt/lists/*
 
 # ZSH
 RUN \
@@ -24,4 +21,4 @@ RUN \
 
 WORKDIR /root
 
-ENTRYPOINT ["/bin/zsh"]
+CMD ["zsh"]

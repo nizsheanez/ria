@@ -1,24 +1,27 @@
 FROM nizsheanez/ubuntu
 MAINTAINER Alex Sharov <www.pismeco@gmail.com>
 
-# Basic soft
-RUN  \
-        apt-get update && \
-        apt-get install -y nginx && \
-        apt-get clean -y && apt-get autoremove -y
+# Install Nginx.
+RUN \
+  add-apt-repository -y ppa:nginx/stable && \
+  apt-get update
 
-# Remove the default Nginx configuration file
-RUN rm -v /etc/nginx/nginx.conf
+RUN apt-get install -y nginx
 
-# Copy a configuration file from the current directory
-ADD nginx.conf /etc/nginx/
+RUN \
+  rm -rf /var/lib/apt/lists/* && \
+  echo "\ndaemon off;" >> /etc/nginx/nginx.conf && \
+  chown -R www-data:www-data /var/lib/nginx
 
-# Append "daemon off;" to the beginning of the configuration
-RUN echo "daemon off;" >> /etc/nginx/nginx.conf
+# Define mountable directories.
+VOLUME ["/etc/nginx/sites-enabled", "/etc/nginx/conf.d", "/var/log/nginx"]
 
-# Expose ports
+# Define working directory.
+WORKDIR /etc/nginx
+
+# Expose ports.
 EXPOSE 80
+EXPOSE 443
 
-# Set the default command to execute
-# when creating a new container
-CMD service nginx start
+# Define default command.
+CMD ["nginx"]

@@ -5,17 +5,17 @@ RUN apt-get update
 
 RUN apt-get -y install mysql-server-5.6 pwgen
 
-ADD ./configs /opt/configs/
+ADD ./configs /opt/configs/mysql/
 
 # Add MySQL configuration
 # Add MySQL scripts
 # We do rm /var/lib/mysql* after mysql installation, because will use data from Volume
 RUN \
-        mv /opt/configs/cnf/my.cnf /etc/mysql/conf.d/my.cnf && \
-        mv /opt/configs/cnf/mysqld_charset.cnf /etc/mysql/conf.d/mysqld_charset.cnf && \
-        mv /opt/configs/scripts/create_mysql_admin_user.sh /create_mysql_admin_user.sh && \
-        mv /opt/configs/scripts/import_sql.sh /import_sql.sh && \
-        mv /opt/configs/scripts/run.sh /run.sh && \
+        mv /opt/configs/mysql/cnf/my.cnf /etc/mysql/conf.d/my.cnf && \
+        mv /opt/configs/mysql/cnf/mysqld_charset.cnf /etc/mysql/conf.d/mysqld_charset.cnf && \
+        mv /opt/configs/mysql/scripts/create_mysql_admin_user.sh /create_mysql_admin_user.sh && \
+        mv /opt/configs/mysql/scripts/import_sql.sh /import_sql.sh && \
+        mv /opt/configs/mysql/scripts/run.sh /run.sh && \
         rm -rf /opt/configs && \
         chmod 755 /*.sh && \
         rm -rf /var/lib/mysql/* /etc/mysql/*

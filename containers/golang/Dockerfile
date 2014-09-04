@@ -1,25 +1,17 @@
 FROM nizsheanez/ubuntu
 MAINTAINER Alex Sharov <www.pismeco@gmail.com>
 
-RUN apt-get update
+RUN \
+  mkdir -p /goroot && \
+  curl https://storage.googleapis.com/golang/go1.3.1.linux-amd64.tar.gz | tar xvzf - -C /goroot --strip-components=1
 
 RUN \
-    apt-get install -y golang-go
-
-RUN \
-    git clone https://github.com/pote/gpm.git /tmp/gpm && cd /tmp/gpm && \
-    git checkout v1.2.3 && ./configure && make install && \
-    rm -rf /tmp/gpm && \
-    \
-    git clone https://github.com/pote/gvp.git /tmp/gvp &&  cd /tmp/gvp && \
-    git checkout tags/0.1.0 && ./configure && make install && \
-    rm -rf /tmp/gpm-git
-
-
-RUN \
-    mkdir /goroot /gopath
+    mkdir /gopath
 
 ENV GOROOT /goroot
 ENV GOPATH /gopath
+ENV GOBIN $GOROOT/bin
+ENV PATH $GOROOT/bin:$GOPATH/bin:$PATH
 
-ENV PATH $PATH:$GOROOT/bin:$GOPATH/bin
+# Define working directory.
+WORKDIR /gopath

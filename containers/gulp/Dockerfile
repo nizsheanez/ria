@@ -1,9 +1,7 @@
 FROM dockerfile/nodejs
 
-RUN apt-get update
-RUN apt-get install -y ruby-dev build-essential
-
-RUN npm install -g gulp
+RUN curl https://npmjs.org/install.sh | sh
+RUN npm install gulp gulp-jade gulp-stylus gulp-livereload gulp-myth gulp-csso gulp-imagemin gulp-uglify gulp-concat connect --save-dev
 
 RUN mkdir /gulp
 

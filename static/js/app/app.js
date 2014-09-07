@@ -92,12 +92,36 @@ function router($routeProvider, $locationProvider) {
     var articleDir = appDir + '/article/views';
 
     $routeProvider
-        .when('/', {templateUrl: goalDir + '/goals.html', controller: 'GoalCtrl'})
-        .when('/yesterday', {templateUrl: goalDir + '/goals.html', controller: 'GoalCtrl'})
-        .when('/active', {templateUrl: goalDir + '/goals.html', controller: 'GoalCtrl'})
-        .when('/goal/:id', {templateUrl: goalDir + '/goals.html', controller: 'GoalCtrl'})
-        .when('/news/', {templateUrl: goalDir + '/news.html', controller: 'NewsCtrl'})
-        .when('/article/create', {templateUrl: articleDir + '/forms/create.html', controller: 'ArticleCreateCtrl'});
+        .when('/', {
+            templateUrl: articleDir + '/forms/create.html',
+            controller: 'ArticleCreateCtrl',
+            controllerAs: 'vm'
+        })
+        .when('/yesterday', {
+            templateUrl: goalDir + '/goals.html',
+            controller: 'GoalCtrl',
+            controllerAs: 'vm'
+        })
+        .when('/active', {
+            templateUrl: goalDir + '/goals.html',
+            controller: 'GoalCtrl',
+            controllerAs: 'vm'
+        })
+        .when('/goal/:id', {
+            templateUrl: goalDir + '/goals.html',
+            controller: 'GoalCtrl',
+            controllerAs: 'vm'
+        })
+        .when('/news/', {
+            templateUrl: goalDir + '/news.html',
+            controller: 'NewsCtrl',
+            controllerAs: 'vm'
+        })
+        .when('/article/create', {
+            templateUrl: articleDir + '/forms/create.html',
+            controller: 'ArticleCreateCtrl',
+            controllerAs: 'vm'
+        });
 
 //    $urlRouterProvider.otherwise({
 //        redirectTo: '/'

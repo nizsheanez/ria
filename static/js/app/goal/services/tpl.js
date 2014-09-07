@@ -1,6 +1,8 @@
 'use strict';
 
-angular.module('eg.goal').factory('Tpl', function () {
+angular.module('eg.goal').factory('Tpl', Tpl);
+
+function Tpl() {
     var tplBase = '/static/js//app/goal/';
 
     var service = {
@@ -16,4 +18,4 @@ angular.module('eg.goal').factory('Tpl', function () {
         }
     };
     return service;
-});
+}

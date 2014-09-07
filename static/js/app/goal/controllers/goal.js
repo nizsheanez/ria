@@ -1,6 +1,10 @@
 'use strict';
 
-angular.module('eg.goal').controller('GoalCtrl', function ($q, $http, $scope, $socketResource, $routeParams, $location, $modal, Tpl, User, Category, Goal, Conclusion, Modal) {
+angular.module('eg.goal').controller('GoalCtrl', GoalCtrl);
+
+GoalCtrl.$inject = ['$scope', '$location', 'Tpl', 'User', 'Category', 'Goal', 'Conclusion', 'Modal'];
+
+function GoalCtrl($scope, $location, Tpl, User, Category, Goal, Conclusion, Modal) {
 
     $scope.tpl = Tpl;
     $scope.keys = [];
@@ -22,7 +26,7 @@ angular.module('eg.goal').controller('GoalCtrl', function ($q, $http, $scope, $s
 
     $scope.inFocus = function (goal) {
         return goal.id === $scope.focusGoal.id;
-    }
+    };
 
     $scope.defaultPlaceholder = 'Сделано';
 
@@ -54,9 +58,13 @@ angular.module('eg.goal').controller('GoalCtrl', function ($q, $http, $scope, $s
 
 
     showScreen();
-});
+}
 
-angular.module('eg.goal').controller('GoalEditModalCtrl', function ($scope, $modalInstance, params, Category) {
+angular.module('eg.goal').controller('GoalEditModalCtrl', GoalEditModalCtrl);
+
+GoalEditModalCtrl.$inject = ['$scope', '$modalInstance', 'params', 'Category'];
+
+function GoalEditModalCtrl($scope, $modalInstance, params, Category) {
 
     $scope.goal = params.goal;
     $scope.categories = Category.getAll();
@@ -70,10 +78,14 @@ angular.module('eg.goal').controller('GoalEditModalCtrl', function ($scope, $mod
     $scope.cancel = function () {
         $modalInstance.dismiss('cancel');
     };
-});
+}
 
 
-angular.module('eg.goal').controller('BacklogModalCtrl', function ($scope, $modalInstance, $modal, params, Goal, Modal) {
+angular.module('eg.goal').controller('BacklogModalCtrl', BacklogModalCtrl);
+
+BacklogModalCtrl.$inject = ['$scope', '$modalInstance', 'params', 'Goal', 'Modal'];
+
+function BacklogModalCtrl($scope, $modalInstance, params, Goal, Modal) {
 
     $scope.goals = Goal.getAll();
     $scope.category = params.category;
@@ -88,4 +100,4 @@ angular.module('eg.goal').controller('BacklogModalCtrl', function ($scope, $moda
     $scope.cancel = function () {
         $modalInstance.dismiss('cancel');
     };
-});
+}

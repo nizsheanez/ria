@@ -23,11 +23,17 @@ angular.module('eg.goal', [
     'textAngular'
 ]);
 
-angular.module('eg.goal').config(['msdElasticConfig', function (config) {
-    config.append = '\n\n';
-}]);
+angular.module('eg.goal').config(elasticTextareaConfig);
 
-angular.module('eg.goal').config(['$httpProvider', function ($httpProvider) {
+elasticTextareaConfig.$inject = ['msdElasticConfig'];
+function elasticTextareaConfig(msdElasticConfig) {
+    msdElasticConfig.append = '\n\n';
+}
+
+angular.module('eg.goal').config(httpStylePostParameters);
+
+httpStylePostParameters.$inject = ['$httpProvider'];
+function httpStylePostParameters($httpProvider) {
     $httpProvider.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded;charset=utf-8';
 
     /**
@@ -70,9 +76,12 @@ angular.module('eg.goal').config(['$httpProvider', function ($httpProvider) {
     $httpProvider.defaults.transformRequest = [function (data) {
         return angular.isObject(data) && String(data) !== '[object File]' ? param(data) : data;
     }];
-}]);
+}
 
-angular.module('eg.goal').config(['$routeProvider', '$locationProvider', function ($routeProvider, $locationProvider) {
+angular.module('eg.goal').config(router);
+
+router.$inject = ['$routeProvider', '$locationProvider'];
+function router($routeProvider, $locationProvider) {
 
     $locationProvider
         .html5Mode(true)
@@ -93,8 +102,7 @@ angular.module('eg.goal').config(['$routeProvider', '$locationProvider', functio
 //    $urlRouterProvider.otherwise({
 //        redirectTo: '/'
 //    });
-}]);
-
+}
 
 angular.module('eg.goal').run(function ($rootScope, $templateCache, $compile) {
 

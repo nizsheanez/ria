@@ -1,7 +1,9 @@
 'use strict';
 
 
-angular.module('eg.components', []).service('server', function () {
+angular.module('eg.components', []).service('server', server);
+
+function server() {
     var prefix = 'http://' + document.domain + '/ws/';
     var socketDefer = $.Deferred();
     // WAMP session object
@@ -46,12 +48,15 @@ angular.module('eg.components', []).service('server', function () {
 //        'maxRetries': 60000,
 //        'retryDelay': 1000
 //    });
-    connection.open()
+    connection.open();
     sess.prefix = prefix;
     return sess;
-});
+}
 
-angular.module('eg.components').factory('$socketResource', ['server', function (server) {
+angular.module('eg.components').factory('$socketResource', $socketResource);
+$socketResource.$inject = ['server'];
+
+function $socketResource(server) {
     /**
      * Create a shallow copy of an object and clear other fields from the destination
      */
@@ -114,6 +119,10 @@ angular.module('eg.components').factory('$socketResource', ['server', function (
     function isNumber(n) {
         return !isNaN(parseFloat(n)) && isFinite(n);
     }
+
+    return resourceFactory;
+
+    ////////////////
 
     function resourceFactory(url, paramDefaults, actions) {
         var route = new Route(url);
@@ -211,5 +220,4 @@ angular.module('eg.components').factory('$socketResource', ['server', function (
         return Resource;
     }
 
-    return resourceFactory;
-}]);
+}

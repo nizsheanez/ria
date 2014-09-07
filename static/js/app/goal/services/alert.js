@@ -1,18 +1,16 @@
 'use strict';
 
-angular.module('eg.goal').factory('alertService', function ($rootScope) {
-    var alertService = {};
+angular.module('eg.goal').factory('alertService', alertService);
 
+alertService.$inject = ['$rootScope'];
 
+function alertService($rootScope) {
     // create an array of alerts available globally
     $rootScope.alerts = [];
 
-    alertService.add = function (type, msg) {
-        $rootScope.alerts.push({'type': type, 'msg': msg});
-    };
-
-    alertService.closeAlert = function (index) {
-        $rootScope.alerts.splice(index, 1);
+    var alertService = {
+        add: add,
+        closeAlert: closeAlert
     };
 
     $rootScope.$on('notification:add', function (event, data) {
@@ -20,4 +18,13 @@ angular.module('eg.goal').factory('alertService', function ($rootScope) {
     });
 
     return alertService;
-});
+
+    function add(type, msg) {
+        $rootScope.alerts.push({'type': type, 'msg': msg});
+    }
+
+     function closeAlert(index) {
+        $rootScope.alerts.splice(index, 1);
+    }
+
+}

@@ -5,9 +5,11 @@ import (
 	"github.com/astaxie/beego/orm"
 	//		"github.com/astaxie/beego"
 	"ria/components"
+	"github.com/astaxie/beego/validation"
 	"github.com/lann/squirrel"
 	"strconv"
 	"fmt"
+	"ria/components/db"
 
 )
 
@@ -15,7 +17,7 @@ type User struct {
 	components.BaseModel
 	Id                   int                   `db:"id" json:"id"`
 	UserName             string                `db:"username" json:"username"`
-	AuthKey              string 			   `db:"auth_key" json:"auth_key"`
+	AuthKey              string               `db:"auth_key" json:"auth_key"`
 	PasswordHash         string                `db:"password_hash" json:"password_hash"`
 	PasswordResetToken   string                `db:"password_reset_token" json:"password_reset_token"`
 	Email                string                `db:"email" json:"email"`
@@ -44,7 +46,7 @@ func FindUsers() ([]User, error) {
 	qb := squirrel.Select("*").From("user")
 
 	var users []User
-	err := components.LoadCollection(&qb, &users)
+	err := db.LoadCollection(&qb, &users)
 	if err != nil {
 		return nil, err
 	}
@@ -58,7 +60,7 @@ func (this *User) Get(id int) (result map[string]interface{}, err error) {
 	qb := squirrel.Select("*").
 	From("user").
 	Where("id = ?", id)
-	err = components.LoadOne(&qb, user)
+	err = db.LoadOne(&qb, user)
 	if err != nil {
 		return nil, err
 	}
@@ -68,6 +70,16 @@ func (this *User) Get(id int) (result map[string]interface{}, err error) {
 	}
 	return result, nil
 }
+
+func (this *User) FindById(id int) error {
+	err := db.NewLoader().FindByIdInTable(this.TableName(), id, this)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
 
 func (this *User) GetInitialData() (result map[string]interface{}, err error) {
 	o := orm.NewOrm()
@@ -92,7 +104,7 @@ func (this *User) GetInitialData() (result map[string]interface{}, err error) {
 	From("goal").
 	Where("fk_user = ?", this.Id)
 
-	err = components.LoadCollection(&qb, &rawGoals)
+	err = db.LoadCollection(&qb, &rawGoals)
 	if err != nil {
 		return nil, err
 	}
@@ -120,13 +132,13 @@ func (this *User) GetInitialData() (result map[string]interface{}, err error) {
 			Where("fk_goal = ?", response.Goals[i].Id)
 
 			if day == "today" {
-				err = components.LoadOne(&qb, response.Goals[i].Today.Report)
+				err = db.LoadOne(&qb, response.Goals[i].Today.Report)
 				if err != nil {
 					return nil, err
 				}
 				//TODO: create if not found
 			} else {
-				err = components.LoadOne(&qb, response.Goals[i].Yesterday.Report)
+				err = db.LoadOne(&qb, response.Goals[i].Yesterday.Report)
 				if err != nil {
 					return nil, err
 				}
@@ -153,7 +165,7 @@ func (this *User) GetInitialData() (result map[string]interface{}, err error) {
 		Where("report_date >= ?", FormatDate(day1)).
 		Where("report_date < ?", FormatDate(day2))
 
-		err = components.LoadOne(&qb, response.Conclusions[day])
+		err = db.LoadOne(&qb, response.Conclusions[day])
 		if err != nil {
 			return nil, err
 		}
@@ -165,7 +177,7 @@ func (this *User) GetInitialData() (result map[string]interface{}, err error) {
 	qb = squirrel.Select("*").
 	From("goal_category")
 
-	err = components.LoadCollection(&qb, &cats)
+	err = db.LoadCollection(&qb, &cats)
 	if err != nil {
 		return nil, err
 	}
@@ -187,3 +199,5 @@ func FormatDate(t time.Time) string {
 	return fmt.Sprintf("%04d-%02d-%02d", t.Year(), t.Month(), t.Day())
 }
 
+func (this *User) Validators(validator *validation.Validation, scenario string) {
+}

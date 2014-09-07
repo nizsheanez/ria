@@ -1,22 +1,31 @@
 'use strict';
 
-angular.module('eg.goal').factory('Article', ['$resource', function ($resource) {
+angular.module('eg.goal').factory('Article', Article);
+
+Article.$inject = ['$resource'];
+
+function Article($resource) {
 
     var Article = $resource('/article', {}, {
-        query : {
+        query: {
             url: "/article/list",
             isArray: true
         }
     });
 
-    var service = {
-        instantiate: function(raw) {
-            return new Report(raw);
-        },
-        New: function() {
-            return new Article
-        }
+    return {
+        instantiate: instantiate,
+        New: New
     };
-    return service;
-}]);
+
+    /////////////
+
+    function instantiate(raw) {
+        return new Report(raw);
+    }
+
+    function New() {
+        return new Article
+    }
+}
 

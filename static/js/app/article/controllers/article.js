@@ -1,18 +1,25 @@
 'use strict';
 
-angular.module('eg.goal').controller('ArticleCreateCtrl', function ($scope, $location, Tpl, Article) {
+angular.module('eg.goal').controller('ArticleCreateCtrl', ArticleCreateCtrl);
 
-    $scope.tpl = Tpl;
+ArticleCreateCtrl.$inject = ['Article'];
 
-    $scope.article = Article.New();
+function ArticleCreateCtrl(Article) {
 
-    $scope.submit = function() {
-        if ($scope.articleForm.$valid) {
-            $scope.article.$save()
+    /* jshint validthis: true */
+    var vm = this;
+    vm.article = Article.New();
+    vm.submit = formSubmit;
+
+    //////////
+
+    function formSubmit() {
+        if (vm.$scope.articleForm.$valid) {
+            vm.article.$save()
         } else {
             return false;
         }
     }
+}
 
-});
 

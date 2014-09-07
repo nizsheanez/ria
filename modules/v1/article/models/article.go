@@ -2,6 +2,7 @@ package models
 
 import (
 	"ria/components"
+	"ria/components/db"
 	"github.com/astaxie/beego/validation"
 )
 
@@ -24,6 +25,16 @@ func (*Article) TableName() string {
 
 func NewArticle() (*Article) {
 	return &Article{}
+}
+
+
+func (this *Article) FindById(id int) error {
+	err := db.NewLoader().FindByIdInTable(this.TableName(), id, this)
+	if err != nil {
+		return err
+	}
+
+	return nil
 }
 
 func (this *Article) Validators(validator *validation.Validation, scenario string) {

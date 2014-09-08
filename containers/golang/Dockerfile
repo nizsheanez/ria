@@ -8,6 +8,8 @@ RUN \
 RUN \
     mkdir /gopath
 
+RUN apt-get install -y --no-install-recommends mercurial
+
 ENV GOROOT /goroot
 ENV GOPATH /gopath
 ENV GOBIN $GOROOT/bin

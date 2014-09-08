@@ -17,7 +17,7 @@ func (*Loader) FindByIdInTable(tableName string, id int, buf interface {}) error
 	From(tableName).
 	Where("id = ?", id)
 
-	err := LoadOne(&qb, buf)
+	err := LoadStruct(&qb, buf)
 	if err != nil {
 		return err
 	}
@@ -44,7 +44,7 @@ func LoadCollection(qb *squirrel.SelectBuilder, buf interface{}) error {
 	return nil
 }
 
-func LoadOne(qb *squirrel.SelectBuilder, buf interface{}) error {
+func LoadStruct(qb *squirrel.SelectBuilder, buf interface{}) error {
 
 	query, args, err := qb.ToSql()
 

@@ -1,5 +1,4 @@
 #!/bin/sh
-
 #Mysql
 mysql=docker run --name mysql \
             -p 3306:3306 \
@@ -8,12 +7,21 @@ mysql=docker run --name mysql \
 
 #Golang
 app=docker run --name ria \
-            -v /gopath:/gopath \
+            -v /gopath/src/ria:/gopath/src/ria \
             -p 8080:8080 \
             -p 8081:8081 \
             -p 80:80 \
             --link mysql:db \
             -d nizsheanez/ria
+
+app=docker run --name ria2 \
+            -v /gopath/src/ria2:/gopath/src/ria2 \
+            -d nizsheanez/ria2
+
+docker run --name revel \
+            --volumes-from ria2 \
+            -p 9000:9000 \
+            -i nizsheanez/revel
 
 #Bee
 bee=docker run --name bee \

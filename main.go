@@ -12,6 +12,8 @@ import (
 )
 
 func main() {
+	beego.BeeLogger.Info("!!!!!!")
+
 	db, err := sqlx.Open("mysql", "root:asharov@/blog3?charset=utf8")
 	if err != nil {
 		panic(err)
@@ -24,6 +26,7 @@ func main() {
 	//websocket server
 	wampServer := wamp.NewServer()
 	beego.BeeLogger.Info("Running WS server wait for client requests")
+
 	go wampServer.ListenAndServe()
 
 	//run upgrade server, for upgrade http to ws

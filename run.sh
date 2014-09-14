@@ -3,16 +3,17 @@
 mysql=docker run --name mysql \
             -p 3306:3306 \
             -v /var/lib/mysql:/var/lib/mysql \
-            -d nizsheanez/percona
+            -i dockerfile/mysql
 
 #Golang
 app=docker run --name ria \
-            -v /gopath/src/ria:/gopath/src/ria \
             -p 8080:8080 \
             -p 8081:8081 \
             -p 80:80 \
+            -p 22:22 \
             --link mysql:db \
-            -d nizsheanez/ria
+            -i nizsheanez/ria
+
 
 app=docker run --name ria2 \
             -v /gopath/src/ria2:/gopath/src/ria2 \

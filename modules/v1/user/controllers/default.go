@@ -35,6 +35,6 @@ func (this *MainController) Get() {
 
 	this.Data["Storage"] = template.JS(string(str))
 
-	this.TplNames = "index.tpl"
+	this.TplNames = "/index.tpl"
 	return
 }

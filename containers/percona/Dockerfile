@@ -8,7 +8,7 @@ RUN \
   apt-get update
 
 RUN \
-  apt-get install -y percona-server-server-5.6
+  apt-get install -y --no-install-recommends percona-server-server-5.6
 
 ADD ./configs /opt/configs/mysql/
 

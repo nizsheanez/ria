@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 docker build -t nizsheanez/ubuntu ./ubuntu
 

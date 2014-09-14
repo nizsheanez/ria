@@ -6,3 +6,4 @@ VOLUME ["/gopath/src/ria2"]
 EXPOSE 9000
 
 WORKDIR /gopath/src/ria2
+

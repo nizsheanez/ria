@@ -7,7 +7,9 @@ ENV HOME /root
 ADD ./configs /opt/configs/
 
 Run apt-get update
-Run apt-get install -y nano zsh
+Run apt-get install -y --no-install-recommends nano zsh openssh-server
+
+# SSH - we need it because no NFS support in go. See https://github.com/howeyc/fsnotify/issues/107
 
 # ZSH
 RUN \
@@ -15,9 +17,12 @@ RUN \
         chsh -s `which zsh`
 
 RUN \
+        mkdir /var/run/sshd && \
         cp /opt/configs/zsh/.zshrc /root/.zshrc && \
         cp /opt/configs/sshd/sshd_config /etc/ssh/sshd_config && \
         rm -rf /opt/configs/
+
+EXPOSE 22
 
 WORKDIR /root
 

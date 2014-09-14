@@ -10,8 +10,8 @@ RUN \
   apt-get -y upgrade && \
   apt-get install -y build-essential && \
   apt-get install -y software-properties-common && \
-  apt-get install -y byobu curl git htop man unzip vim wget && \
-  rm -rf /var/lib/apt/lists/*
+  apt-get install -y byobu curl git htop man unzip vim wget
+
 
 # Set environment variables.
 ENV HOME /root
@@ -20,15 +20,8 @@ ENV HOME /root
 WORKDIR /root
 
 
-# Basic soft
-RUN  \
-        apt-get update && \
-        apt-get clean -y && apt-get autoremove -y
-
 Run \
-        apt-get update && \
-        apt-get install -y nano openssh-server zsh && \
-        apt-get clean && apt-get autoremove
+        apt-get install -y --no-install-recommends nano openssh-server zsh
 
 ADD ./configs /opt/configs/
 
@@ -38,7 +31,10 @@ RUN \
         chsh -s `which zsh`
 
 RUN \
-        cp /opt/configs/zsh/.zshrc /root/.zshrc && \
-        cp /opt/configs/sshd/sshd_config /etc/ssh/sshd_config
+        mkdir /var/run/sshd && \
+        cp /opt/configs/sshd/sshd_config /etc/ssh/sshd_config && \
+        cp /opt/configs/zsh/.zshrc /root/.zshrc
+
+EXPOSE 22
 
 ENTRYPOINT ["/bin/zsh"]

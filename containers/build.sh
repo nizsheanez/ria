@@ -12,7 +12,6 @@ docker build -t nizsheanez/zsh ./zsh &
 cd ../ && docker build -t nizsheanez/ria .
 
 
-
 docker rm $(docker ps -a -q)
 
 docker rmi $(docker images -q --filter "dangling=true")

@@ -2,13 +2,17 @@
 
 docker build -t nizsheanez/ubuntu ./ubuntu
 
-docker build -t nizsheanez/percona ./percona
+docker build -t nizsheanez/mysql ./mysql &
+docker build -t nizsheanez/golang ./golang  &
+docker build -t nizsheanez/gulp ./gulp  &
+docker build -t nizsheanez/bower ./bower &
+docker build -t nizsheanez/debug ./debug &
+docker build -t nizsheanez/zsh ./zsh &
 
-docker build -t nizsheanez/golang ./golang
+cd ../ && docker build -t nizsheanez/ria .
 
-docker build -t nizsheanez/gulp ./gulp
 
-docker build -t nizsheanez/ria ./ria
 
-docker build -t nizsheanez/bee ./bee
+docker rm $(docker ps -a -q)
 
+docker rmi $(docker images -q --filter "dangling=true")

@@ -3,7 +3,7 @@
 mysql=docker run --name mysql \
             -p 3306:3306 \
             -v /var/lib/mysql:/var/lib/mysql \
-            -i dockerfile/mysql
+            -d nizsheanez/mysql
 
 #Golang
 app=docker run --name ria \
@@ -14,16 +14,15 @@ app=docker run --name ria \
             --link mysql:db \
             -i nizsheanez/ria
 
+docker run --rm \
+            --vaues-from ria \
+            -ti nizsheanez/bower bash -c 'cd /gopath/src/ria && bower --allow-root install'
 
-app=docker run --name ria2 \
-            -v /gopath/src/ria2:/gopath/src/ria2 \
-            -d nizsheanez/ria2
+docker run --rm \
+            --volumes-from ria \
+            -i nizsheanez/bower 
 
-docker run --name revel \
-            --volumes-from ria2 \
-            -p 9000:9000 \
-            -i nizsheanez/revel
-
+#RUN cd /gopath/src/ria/static && bower install --allow-root
 #Bee
 bee=docker run --name bee \
             --volumes-from ria \

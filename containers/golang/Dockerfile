@@ -1,19 +1,18 @@
-FROM nizsheanez/ubuntu
+FROM google/golang
 MAINTAINER Alex Sharov <www.pismeco@gmail.com>
 
 RUN \
-  mkdir -p /goroot && \
-  curl https://storage.googleapis.com/golang/go1.3.1.linux-amd64.tar.gz | tar xvzf - -C /goroot --strip-components=1
+    apt-get update && apt-get install -y --no-install-recommends mercurial && \
+    git clone https://github.com/pote/gvp.git && \
+    cd gvp && \
+    git checkout v0.1.0 && \
+    ./configure && make install && \
+    rm -rf * && \
+    git clone https://github.com/pote/gpm.git && \
+    cd gpm && \
+    git checkout v1.2.3 && \
+    ./configure && make install && \
+    rm -rf *
 
-RUN \
-    mkdir /gopath
-
-RUN apt-get install -y --no-install-recommends mercurial
-
-ENV GOROOT /goroot
-ENV GOPATH /gopath
 ENV GOBIN $GOROOT/bin
-ENV PATH $GOROOT/bin:$GOPATH/bin:$PATH
 
-# Define working directory.
-WORKDIR /gopath

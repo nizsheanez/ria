@@ -4,26 +4,24 @@
     "appPath": "src",
     "dependencies": {
         "jquery": "2.*",
-        "angular": "1.*",
+        "angular": "1.2.5",
         "bootstrap": "*",
         "angular-route": "*",
         "angular-resource": "*",
         "angular-bootstrap": "*",
-        "angular-complete": "1.*",
         "angular-sanitize": "*",
-        "angular-translate": "1.*",
+        "angular-translate": "2.*",
         "angular-ui": "*",
         "angular-ui-sortable": "https://github.com/angular-ui/ui-sortable.git#angular1.2",
-        "angular-ui-utils": "latest",
+        "angular-ui-utils": "*",
         "angular-mocks": "*",
-        "angular-scenario": "*",
         "components-font-awesome": "*",
         "angular-elastic": "*",
         "sockjs": "*",
         "textAngular": "https://github.com/nizsheanez/textAngular.git#directives_support",
-        "when": "3.3.1"
+        "when": "3.*"
     },
     "resolutions": {
-        "angular": "1.2.20"
+        "angular": "1.2.25"
     }
 }

@@ -1,20 +1,20 @@
 FROM nizsheanez/golang
 MAINTAINER Alex Sharov <www.pismeco@gmail.com>
 
-VOLUME ["/gopath"]
-
-RUN mkdir -p /gopath/src/ria
-
 ADD ./ /gopath/src/ria
 
-WORKDIR /gopath/src/ria
+RUN cd /gopath/src/ria && gpm install
+#RUN cd /gopath/src/ria/static && bower install --allow-root
 
-RUN go get
-
-RUN go get -v github.com/beego/bee
+RUN go install ria
 
 VOLUME ["/gopath/src/ria"]
 
-EXPOSE ["8080", "80", "8081"]
+EXPOSE 8080
+EXPOSE 80
+EXPOSE 8081
 
-CMD ["bee", "run"]
+WORKDIR /gopath/src/ria
+
+CMD ["ria"]
+

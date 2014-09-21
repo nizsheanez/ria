@@ -4,7 +4,7 @@ github.com/gorilla/websocket        master
 github.com/lann/squirrel            master
 github.com/jmoiron/sqlx             master
 code.google.com/p/go.tools/cmd/vet  master
-github.com/codegangsta/cli          v1.2.0
+github.com/codegangsta/cli          1.2.0
 code.google.com/p/go.crypto/ssh     trunk
 github.com/daviddengcn/go-colortext master
 gopkg.in/yaml.v1                    master

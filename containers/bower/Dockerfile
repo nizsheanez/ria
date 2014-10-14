@@ -1,8 +1,6 @@
-# Pull base image.
-FROM dockerfile/nodejs
+FROM nizsheanez/nodejs
 
 WORKDIR /app
 
-# Install Bower & Grunt
 RUN npm install -g bower
 

@@ -2,7 +2,6 @@ package models
 
 import (
 	"time"
-	"github.com/astaxie/beego/orm"
 	//		"github.com/astaxie/beego"
 	"ria/components"
 	"github.com/astaxie/beego/validation"
@@ -25,13 +24,10 @@ type User struct {
 	Status               int8                  `db:"status" json:"status"`
 	CreateTime           string                `db:"create_time" json:"create_time"`
 	UpdateTime           string                `db:"update_time" json:"update_time"`
-	//	Goals                []*Goal                   `orm:"reverse(many)" json:"-"`
-	//	Conclusions          map[string]*Conclusion    `orm:"-" json:"-"`
 }
 
 func init() {
 	// Need to register model in init
-	//	orm.RegisterModel(new(User))
 }
 
 func NewUser() *User {
@@ -82,8 +78,6 @@ func (this *User) FindById(id int) error {
 
 
 func (this *User) GetInitialData() (result map[string]interface{}, err error) {
-	o := orm.NewOrm()
-	o.Using("default")
 
 	type ResponseGoal struct {
 		Goal

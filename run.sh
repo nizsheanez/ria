@@ -1,32 +1,30 @@
 #!/bin/sh
+docker run -d \
+    -v /var/lib/mysql:/var/lib/mysql \
+    -e MYSQL_PASS="asharov" \
+    tutum/mysql
+
+docker run --rm \
+            -v /var/www/ria:/gopath/src/ria \
+            -ti nizsheanez/golang bash -c 'cd /gopath/src/ria && gvp init && source gvp in && gpm install'
+
+docker run --rm \
+            -v /var/www/ria:/gopath/src/ria \
+            -ti nizsheanez/bower bash -c 'cd /gopath/src/ria/static && bower --allow-root install'
+
 #Mysql
-mysql=docker run --name mysql \
+mysql=docker run --rm --name mysql \
             -p 3306:3306 \
             -v /var/lib/mysql:/var/lib/mysql \
-            -d nizsheanez/mysql
+            -d tutum/mysql
 
 #Golang
-app=docker run --name ria \
+app=docker run --rm --name ria \
             -p 8080:8080 \
             -p 8081:8081 \
             -p 80:80 \
-            -p 22:22 \
-            --link mysql:db \
+            -v /var/www/ria:/gopath/src/ria \
             -i nizsheanez/ria
-
-docker run --rm \
-            --vaues-from ria \
-            -ti nizsheanez/bower bash -c 'cd /gopath/src/ria && bower --allow-root install'
-
-docker run --rm \
-            --volumes-from ria \
-            -i nizsheanez/bower 
-
-#RUN cd /gopath/src/ria/static && bower install --allow-root
-#Bee
-bee=docker run --name bee \
-            --volumes-from ria \
-            -d nizsheanez/bee
 
 #Gulp
 gulp=docker run --name gulp \

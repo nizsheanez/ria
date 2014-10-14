@@ -7,7 +7,7 @@ RUN \
         wget https://raw.githubusercontent.com/robbyrussell/oh-my-zsh/master/tools/install.sh -O - | zsh && \
         chsh -s `which zsh`
 
-ADD ./configs /opt/configs/
+ADD ./zsh /opt/configs/zsh
 
 RUN \
         cp /opt/configs/zsh/.zshrc /root/.zshrc && \

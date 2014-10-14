@@ -1,9 +1,7 @@
 FROM nizsheanez/ubuntu
 MAINTAINER Fernando Mayo <fernando@tutum.co>, Feng Honglin <hfeng@tutum.co>
 
-RUN apt-get -y install mysql-common-5.6
-RUN apt-get -y install mysql-client-5.6
-RUN apt-get -y install mysql-server-5.6 pwgen
+RUN apt-get -y install mysql-common-5.6 mysql-client-5.6 mysql-server-5.6 pwgen
 
 # Remove pre-installed database
 RUN rm -rf /var/lib/mysql/*

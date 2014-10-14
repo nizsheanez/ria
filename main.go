@@ -6,7 +6,6 @@ import (
 	"net/http"
 	components "ria/components"
 	wamp "ria/wamp/components"
-	"github.com/astaxie/beego/orm"
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/jmoiron/sqlx"
 )
@@ -14,14 +13,11 @@ import (
 func main() {
 	beego.BeeLogger.Info("!!!!!!")
 
-	db, err := sqlx.Open("mysql", "root:asharov@/blog3?charset=utf8")
+	db, err := sqlx.Open("mysql", "root:asharov@tcp(db:3306)/blog3?charset=utf8")
 	if err != nil {
 		panic(err)
 	}
 	components.App.Db = db
-
-	orm.RegisterDriver("mysql", orm.DR_MySQL)
-	orm.RegisterDataBase("default", "mysql", "root:asharov@/blog3?charset=utf8")
 
 	//websocket server
 	wampServer := wamp.NewServer()

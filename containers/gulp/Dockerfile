@@ -1,7 +1,6 @@
-FROM dockerfile/nodejs
+FROM nizsheanez/nodejs
 
-RUN curl https://npmjs.org/install.sh | sh
-RUN npm install gulp gulp-jade gulp-stylus gulp-livereload gulp-myth gulp-csso gulp-imagemin gulp-uglify gulp-concat connect --save-dev
+RUN npm install -g gulp gulp-jade gulp-stylus gulp-livereload gulp-myth gulp-csso gulp-imagemin gulp-uglify gulp-concat connect --save-dev
 
 RUN mkdir /gulp
 
